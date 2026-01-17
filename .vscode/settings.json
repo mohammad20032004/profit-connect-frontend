@@ -1,0 +1,19 @@
+{
+  "window.titleBarStyle": "custom",
+  "workbench.colorCustomizations": {
+    "editor.background": "#0B0B0BB3",
+    "sideBar.background": "#0B0B0BAA",
+    "activityBar.background": "#0B0B0BAA",
+    "panel.background": "#0B0B0BAA",
+    "statusBar.background": "#0B0B0BAA",
+    "titleBar.activeBackground": "#0B0B0BAA",
+    "tab.activeBackground": "#0F172A99",
+    "tab.inactiveBackground": "#0B0B0B80",
+    "editorGroupHeader.tabsBackground": "#0B0B0B99",
+    "sideBar.foreground": "#FFFFFFDD",
+    "activityBar.foreground": "#FFFFFFDD"
+  },
+  "vscode_custom_css.imports": [
+    "file:${workspaceFolder}/.vscode/custom.css"
+  ]
+}

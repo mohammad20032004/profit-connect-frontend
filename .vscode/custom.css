@@ -1,0 +1,70 @@
+/* Glass UI custom CSS for VS Code.
+   Requires the "Custom CSS and JS Loader" extension (be5invis.vscode-custom-css).
+*/
+:root {
+  /* Adjustable glass variables */
+  --glass-opacity: 0.30; /* change this value to increase/decrease opacity (0.0 - 1.0) */
+  --overlay-opacity: 0.03; /* overlay elements (panels, sidebars) */
+  --tab-opacity: 0.02; /* tabs background */
+  --glass-bg: rgba(11, 11, 11, var(--glass-opacity));
+  --glass-blur: 20px; /* increased blur intensity */
+}
+
+/* General backdrop and blur */
+.monaco-workbench .part,
+.monaco-workbench .part .monaco-shell,
+.monaco-workbench .part .content,
+.monaco-workbench .part .content .monaco-scrollable-element,
+.monaco-workbench .part .content .compositebar,
+.monaco-workbench .part .content .panel-container {
+  background: var(--glass-bg) !important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(120%) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(120%) !important;
+  background-clip: padding-box !important;
+}
+
+/* Editor area */
+.monaco-workbench .editor-instance .monaco-editor,
+.monaco-editor .view-lines {
+  background: transparent !important;
+}
+
+/* Panels, Sidebars, Activity bar */
+.part.panel,
+.part.sidebar,
+.activitybar,
+.statusbar,
+.part.titlebar,
+.monaco-workbench .part .compositebar,
+.monaco-workbench .part .panel-container {
+  background: rgba(255,255,255,var(--overlay-opacity)) !important;
+  backdrop-filter: blur(var(--glass-blur)) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) !important;
+}
+
+.monaco-workbench .monaco-editor .margin,
+.monaco-workbench .monaco-editor .monaco-scrollable-element {
+  background: transparent !important;
+}
+
+/* Tabs */
+.tabs-container .tab {
+  background: rgba(255,255,255,var(--tab-opacity)) !important;
+  border: none !important;
+}
+
+/* Tips:
+   - To change overall opacity, edit `--glass-opacity` above (0.0 = fully transparent, 1.0 = opaque).
+   - To change overlay/sidebars opacity, edit `--overlay-opacity`.
+   - To change tab backgrounds, edit `--tab-opacity`.
+   - To change blur strength, edit `--glass-blur`.
+*/
+
+.README-TIP {
+  display: none !important;
+}
+
+/* Make sure text stays readable */
+* {
+  color: inherit !important;
+}
