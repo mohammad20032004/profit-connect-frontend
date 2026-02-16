@@ -49,7 +49,7 @@ const MiniProfile = () => {
                     <Typography variant="body2" component="div" sx={{ mb: 2 }}>
                         Profile viewers
                     </Typography>
-                    <strong>321</strong>
+                    <strong>3221</strong>
                 </Box>
                 <Box sx={{ width: '100%', px: 1.5, display: 'flex', justifyContent: 'space-between' }}
                 >
