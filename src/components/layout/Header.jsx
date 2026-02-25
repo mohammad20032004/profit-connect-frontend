@@ -86,7 +86,7 @@ const Header = () => {
   const [activeTab, setActiveTab] = useState('Home');
   const pathname = usePathname();
   // أضفنا '/sign-out' للقائمة
-  const hiddenRoutes = ['/log-in', '/register', '/sign-out'];
+  const hiddenRoutes = ['/log-in', '/sing-up', '/sign-out'];
 
   const shouldHideHeader = hiddenRoutes.some((route) => pathname.startsWith(route));
 
