@@ -7,7 +7,7 @@ import {
 import {
   School, Work, ChevronRight, ArrowBack, CheckCircle, ArrowForward
 } from '@mui/icons-material';
-
+import SingupHeader from './SingupHeader';
 // إعداد الألوان والسمات المخصصة
 const themeColors = {
   primary: "#6b10c6",
@@ -29,33 +29,7 @@ export default function SingupPageStep2({ onNext, onBack, data }) {
     <Box sx={{ bgcolor: themeColors.bgLight, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       
       {/* 1. Header (Top Navigation) */}
-      <Box component="header" sx={{ 
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        px: { xs: 2, md: 15 }, py: 2, bgcolor: 'white', borderBottom: '1px solid', borderColor: 'divider'
-      }}>
-        <Stack direction="row" spacing={1} alignItems="center">
-          <Box sx={{ color: themeColors.primary, display: 'flex' }}>
-            <svg width="24" height="24" viewBox="0 0 48 48" fill="currentColor">
-              <path d="M4 4H17.3334V17.3334H30.6666V30.6666H44V44H4V4Z" />
-            </svg>
-          </Box>
-          <Typography variant="h6" sx={{ fontWeight: 'bold', color: themeColors.textDark }}>
-            CareerPath
-          </Typography>
-        </Stack>
-        <Stack direction="row" spacing={2} alignItems="center">
-          <Typography variant="body2" color="text.secondary" sx={{ display: { xs: 'none', sm: 'block' } }}>
-            Already have an account?
-          </Typography>
-          <Button variant="contained" sx={{ 
-            bgcolor: themeColors.primary, fontWeight: 'bold', textTransform: 'none',
-            '&:hover': { bgcolor: '#560ca3' }
-          }}>
-            Log In
-          </Button>
-        </Stack>
-      </Box>
-
+<SingupHeader />
       {/* 2. Main Content */}
       <Container maxWidth="md" sx={{ py: 8, flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
         <Paper elevation={0} sx={{ 

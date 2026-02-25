@@ -8,6 +8,7 @@ import {
   Visibility, VisibilityOff, ChevronRight, 
   Person, Work, CheckCircle 
 } from '@mui/icons-material';
+import SingupHeader from './SingupHeader';
 
 
 const colors = {
@@ -36,31 +37,7 @@ export default function SingupPageStep1({ onNext, data }) {
   return (
     <Box sx={{ bgcolor: colors.bgLight, minHeight: '100vh' }}>
       {/* Header */}
-      <Box sx={{ 
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center', 
-        px: { xs: 2, md: 10 }, py: 2, bgcolor: 'white', borderBottom: '1px solid #ede6f4' 
-      }}>
-        <Stack direction="row" spacing={1} alignItems="center">
-          <svg width="24" height="24" viewBox="0 0 48 48" fill={colors.primary}>
-            <path d="M4 4H17.3334V17.3334H30.6666V30.6666H44V44H4V4Z" />
-          </svg>
-          <Typography variant="h6" sx={{ fontWeight: 'bold', color: colors.primary }}>
-            CareerPath
-          </Typography>
-        </Stack>
-        <Stack direction="row" spacing={2} alignItems="center">
-          <Typography variant="body2" sx={{ color: colors.textPurple, display: { xs: 'none', sm: 'block' } }}>
-            Already have an account?
-          </Typography>
-          <Button variant="outlined" sx={{ 
-            color: colors.primary, borderColor: colors.primary, 
-            fontWeight: 'bold', borderRadius: '8px', textTransform: 'none' 
-          }}>
-            Log In
-          </Button>
-        </Stack>
-      </Box>
-
+<SingupHeader />
       {/* Main Form Container */}
       <Container maxWidth="md" sx={{ mt: 6 }}>
         <Paper elevation={0} sx={{ 
