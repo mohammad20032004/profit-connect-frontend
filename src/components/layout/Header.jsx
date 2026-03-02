@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import {
   AppBar,
   Toolbar,
@@ -83,7 +83,6 @@ const navItems = [
 ];
 
 const Header = () => {
-  const [activeTab, setActiveTab] = useState('Home');
   const pathname = usePathname();
   // أضفنا '/sign-out' للقائمة
   const hiddenRoutes = ['/log-in', '/sing-up', '/sign-out'];
@@ -154,46 +153,46 @@ const Header = () => {
           {/* ========== Right Side: Navigation Icons ========== */}
           <Stack direction="row" spacing={{ xs: 2, md: 4 }} alignItems="center" sx={{ height: '52px' }}>
 
-            {navItems.map((item) => (
-              <Box
-                key={item.label}
-                onClick={() => setActiveTab(item.label)}
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  height: '100%',
-                  position: 'relative',
-                  color: activeTab === item.label ? '#191919' : '#666666',
-                  '&:hover': { color: '#191919' },
-                  width: { md: '60px', xs: 'auto' } // عرض ثابت في الشاشات الكبيرة
-                }}
-              >
-                <Link href={item.link} >
-                  <Badge color="error" variant="dot" invisible={!item.hasBadge}>
-                    {/* تكبير الأيقونة قليلاً */}
-                    {React.cloneElement(item.icon, { sx: { fontSize: 26 } })}
-                  </Badge>
-                  <Typography variant="caption" sx={{ display: { xs: 'none', md: 'block' }, fontSize: '12px' }}>
-                    {item.label}
-                  </Typography>
-                </Link>
+            {navItems.map((item) => {
+              const isActive = pathname === item.link;
+              return (
+                <Box
+                  key={item.label}
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    height: '100%',
+                    position: 'relative',
+                    color: isActive ? '#191919' : '#666666',
+                    '&:hover': { color: '#191919' },
+                    width: { md: '60px', xs: 'auto' }
+                  }}
+                >
+                  <Link href={item.link}>
+                    <Badge color="error" variant="dot" invisible={!item.hasBadge}>
+                      {React.cloneElement(item.icon, { sx: { fontSize: 26 } })}
+                    </Badge>
+                    <Typography variant="caption" sx={{ display: { xs: 'none', md: 'block' }, fontSize: '12px' }}>
+                      {item.label}
+                    </Typography>
+                  </Link>
 
-                {/* Active Indicator Line */}
-                {activeTab === item.label && (
-                  <Box sx={{
-                    position: 'absolute',
-                    bottom: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '2px',
-                    bgcolor: '#191919'
-                  }} />
-                )}
-              </Box>
-            ))}
+                  {isActive && (
+                    <Box sx={{
+                      position: 'absolute',
+                      bottom: 0,
+                      left: 0,
+                      width: '100%',
+                      height: '2px',
+                      bgcolor: '#191919'
+                    }} />
+                  )}
+                </Box>
+              );
+            })}
 
             {/* Profile Dropdown */}
             <Box sx={{

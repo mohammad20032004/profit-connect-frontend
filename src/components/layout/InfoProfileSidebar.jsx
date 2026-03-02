@@ -1,6 +1,13 @@
+'use client';
+
 import { Paper, Button, Box, Typography, Divider, Avatar, Chip } from "@mui/material";
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import Image from "next/image";
+import { useSelector } from "react-redux";
+
+
+
+
 const MiniProfile = () => {
     return (
         <Paper elevation={0} sx={{
@@ -63,12 +70,9 @@ const MiniProfile = () => {
         </Paper>
     )
 }
-
-
-
-
-
-const LeftSidebar = () => {
+const InfoPrfileSidebar = () => {
+    const info = useSelector((state) => state.user.profile);
+    console.log(info);
     return (
         <Box component={'div'} sx={{ width: '100%', height: '100vh', p: 2 }}>
             <MiniProfile />
@@ -76,4 +80,4 @@ const LeftSidebar = () => {
     )
 };
 
-export default LeftSidebar;
+export default InfoPrfileSidebar;
