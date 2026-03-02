@@ -25,7 +25,9 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-// 1. تصميم حقل البحث المخصص (ليشبه LinkedIn)
+import JobHeader from '../common/jobs/JobHeader';
+import Logo from '../common/Logo';
+
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: '4px',
@@ -73,7 +75,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-// 2. قائمة العناصر للتكرار
+
 const navItems = [
   { label: 'Home', icon: <HomeIcon />, hasBadge: false, link: '/' },
   { label: 'Network', icon: <PeopleIcon />, hasBadge: false, link: '/network' },
@@ -86,10 +88,13 @@ const Header = () => {
   const pathname = usePathname();
   // أضفنا '/sign-out' للقائمة
   const hiddenRoutes = ['/log-in', '/sing-up', '/sign-out'];
+  const jobRoutes = ['/jobs', '/jobs/search', '/jobs/post'];
 
+  const isJobRoute = jobRoutes.some((route) => pathname.startsWith(route));
   const shouldHideHeader = hiddenRoutes.some((route) => pathname.startsWith(route));
 
   if (shouldHideHeader) return null;
+  if (isJobRoute) return <JobHeader />;
   return (
     <AppBar
       position="sticky"
@@ -106,36 +111,7 @@ const Header = () => {
           {/* ========== Left Side: Logo & Search ========== */}
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
 
-            {/* Logo */}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, cursor: 'pointer', py: 1.5 }}>
-              {/* Logo Box */}
-              <Box sx={{
-                bgcolor: 'transparent', // Cyan Secondary Color
-                borderRadius: '2px',
-                width: 48,
-                height: 48,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}>
-                <Image src="/logo/logo.svg" alt="Logo" width={38} height={38} />
-              </Box>
-              {/* Logo Text */}
-              <Typography
-                variant="h6"
-                noWrap
-                component="div"
-                sx={{
-                  display: { xs: 'none', md: 'flex' },
-                  fontWeight: 'bold',
-                  color: '#240046', // Deep Purple Primary Color
-                  letterSpacing: '-0.5px'
-                }}
-              >
-                Profit Connect
-              </Typography>
-            </Box>
-
+<Logo />
             {/* Search Bar */}
             <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
               <Search>
