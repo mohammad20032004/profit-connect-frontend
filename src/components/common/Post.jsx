@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Card,
   CardHeader,
@@ -22,6 +22,7 @@ import RepeatIcon from '@mui/icons-material/Repeat';
 import SendIcon from '@mui/icons-material/Send';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import CommentsModal from './CommentsModal';
 
 // تخصيص أزرار التفاعل (Like, Comment...) لتشبه التصميم
 const ActionButton = styled(Button)(({ theme }) => ({
@@ -51,8 +52,10 @@ const Post = ({
   postImage,
   reactionsCount,
   commentsCount,
-  repostsCount
+  repostsCount,
+  comments = []
 }) => {
+  const [openComments, setOpenComments] = useState(false);
   return (
     <Card sx={{
       maxWidth: '100%',
@@ -173,7 +176,7 @@ const Post = ({
         <ActionButton startIcon={<ThumbUpOffAltIcon />}>
           Like
         </ActionButton>
-        <ActionButton startIcon={<ChatBubbleOutlineIcon />}>
+        <ActionButton startIcon={<ChatBubbleOutlineIcon />} onClick={() => setOpenComments(true)}>
           Comment
         </ActionButton>
         <ActionButton startIcon={<RepeatIcon />}>
@@ -183,6 +186,14 @@ const Post = ({
           Send
         </ActionButton>
       </CardActions>
+
+      {/* Comments Modal */}
+      <CommentsModal 
+        open={openComments} 
+        onClose={() => setOpenComments(false)}
+        comments={comments}
+        postAuthor={authorName}
+      />
 
     </Card>
   );
