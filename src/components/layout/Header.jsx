@@ -25,7 +25,7 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import JobHeader from '../common/jobs/JobHeader';
+import JobHeader from '../jobs/JobHeader';
 import Logo from '../common/Logo';
 
 const Search = styled('div')(({ theme }) => ({

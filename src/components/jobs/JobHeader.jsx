@@ -17,7 +17,7 @@ import BusinessIcon from '@mui/icons-material/Business';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import Logo from '../Logo';
+import Logo from '../common/Logo';
 
 const navItems = [
   { label: 'Find Jobs', icon: <WorkIcon />, link: '/jobs' },
