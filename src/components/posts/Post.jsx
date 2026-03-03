@@ -15,33 +15,30 @@ import {
   Stack
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import PublicIcon from '@mui/icons-material/Public'; // أيقونة الكرة الأرضية
+import PublicIcon from '@mui/icons-material/Public';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
-import RepeatIcon from '@mui/icons-material/Repeat';
 import SendIcon from '@mui/icons-material/Send';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import CommentsModal from './CommentsModal';
 
-// تخصيص أزرار التفاعل (Like, Comment...) لتشبه التصميم
 const ActionButton = styled(Button)(({ theme }) => ({
   textTransform: 'none',
-  color: '#5E5E5E', // لون رمادي غامق للنص
+  color: '#5E5E5E',
   fontWeight: 600,
   padding: theme.spacing(1.5),
   borderRadius: '4px',
-  flex: 1, // ليأخذ كل زر مساحة متساوية
+  flex: 1,
   '&:hover': {
     backgroundColor: 'rgba(0, 0, 0, 0.08)',
     color: 'rgba(0, 0, 0, 0.9)',
   },
   '& .MuiSvgIcon-root': {
     marginRight: theme.spacing(1),
-    fontSize: '24px', // حجم الأيقونة
+    fontSize: '24px',
   },
 }));
-
 
 const Post = ({
   authorName,
@@ -56,15 +53,27 @@ const Post = ({
   comments = []
 }) => {
   const [openComments, setOpenComments] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [likesCount, setLikesCount] = useState(reactionsCount);
+
+  const handleLike = () => {
+    setIsLiked(!isLiked);
+    setLikesCount(isLiked ? likesCount - 1 : likesCount + 1);
+  };
+
+  const handleFollow = () => {
+    setIsFollowing(!isFollowing);
+  };
+
   return (
     <Card sx={{
       maxWidth: '100%',
       borderRadius: '8px',
-      boxShadow: '0px 0px 0px 1px rgba(0,0,0,0.08)', // حدود خفيفة جداً بدلاً من الظل الثقيل
+      boxShadow: '0px 0px 0px 1px rgba(0,0,0,0.08)',
       mb: 2
     }}>
 
-      {/* 1. Header: Author Info & Follow Button */}
       <CardHeader
         avatar={
           <Avatar
@@ -74,22 +83,19 @@ const Post = ({
           />
         }
         action={
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Button
-              size="small"
-              sx={{
-                color: '#00B4D8', // Cyan Color
-                fontWeight: 'bold',
-                textTransform: 'none',
-                mr: 1,
-                fontSize: '14px',
-                '&:hover': { bgcolor: '#e6f7fa' }
-              }}
-            >
-              + Follow
-            </Button>
-            {/* يمكنك إضافة زر More (...) هنا إذا أردت */}
-          </Box>
+          <Button
+            size="small"
+            onClick={handleFollow}
+            sx={{
+              color: isFollowing ? '#666' : '#00B4D8',
+              fontWeight: 'bold',
+              textTransform: 'none',
+              fontSize: '14px',
+              '&:hover': { bgcolor: isFollowing ? '#f5f5f5' : '#e6f7fa' }
+            }}
+          >
+            {isFollowing ? '✓ Following' : '+ Follow'}
+          </Button>
         }
         title={
           <Typography variant="subtitle1" component="div" sx={{ fontWeight: 'bold', color: '#191919', lineHeight: 1.2 }}>
@@ -112,14 +118,12 @@ const Post = ({
         sx={{ pb: 1 }}
       />
 
-      {/* 2. Content: Text */}
       <CardContent sx={{ pt: 0, pb: 1 }}>
         <Typography variant="body1" color="text.primary" sx={{ fontSize: '14px', whiteSpace: 'pre-line' }}>
           {content}
         </Typography>
       </CardContent>
 
-      {/* 3. Content: Image (Optional) */}
       {postImage && (
         <Box
           component="img"
@@ -136,12 +140,8 @@ const Post = ({
         />
       )}
 
-      {/* 4. Stats: Reactions & Comments count */}
       <Box sx={{ px: 2, py: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-
-        {/* Left: Reactions Icons & Count */}
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          {/* Stacked Icons Effect */}
           <Box sx={{ position: 'relative', width: 42, height: 16 }}>
             <Box sx={{
               position: 'absolute', left: 0, zIndex: 2,
@@ -157,37 +157,35 @@ const Post = ({
             </Box>
           </Box>
           <Typography variant="caption" color="text.secondary" sx={{ ml: 0.5, fontSize: '12px', '&:hover': { color: '#004182', textDecoration: 'underline', cursor: 'pointer' } }}>
-            {reactionsCount} reactions
+            {likesCount} reactions
           </Typography>
         </Box>
 
-        {/* Right: Comments Count */}
         <Box>
           <Typography variant="caption" color="text.secondary" sx={{ fontSize: '12px', '&:hover': { color: '#004182', textDecoration: 'underline', cursor: 'pointer' } }}>
-            {commentsCount} comments • {repostsCount} reposts
+            {commentsCount} comments
           </Typography>
         </Box>
       </Box>
 
       <Divider sx={{ mx: 2 }} />
 
-      {/* 5. Action Buttons (Footer) */}
       <CardActions sx={{ px: 1, py: 0.5, justifyContent: 'space-between' }}>
-        <ActionButton startIcon={<ThumbUpOffAltIcon />}>
+        <ActionButton 
+          startIcon={isLiked ? <ThumbUpIcon /> : <ThumbUpOffAltIcon />}
+          onClick={handleLike}
+          sx={{ color: isLiked ? '#0a66c2' : '#5E5E5E' }}
+        >
           Like
         </ActionButton>
         <ActionButton startIcon={<ChatBubbleOutlineIcon />} onClick={() => setOpenComments(true)}>
           Comment
-        </ActionButton>
-        <ActionButton startIcon={<RepeatIcon />}>
-          Repost
         </ActionButton>
         <ActionButton startIcon={<SendIcon sx={{ transform: 'rotate(-45deg)', mt: -0.5 }} />}>
           Send
         </ActionButton>
       </CardActions>
 
-      {/* Comments Modal */}
       <CommentsModal 
         open={openComments} 
         onClose={() => setOpenComments(false)}

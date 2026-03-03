@@ -17,11 +17,13 @@
     "babel-plugin-react-compiler": "^1.0.0",
     "eslint": "^9.39.2",
     "eslint-config-next": "^16.1.0",
+    "framer-motion": "^12.34.5",
     "immer": "^11.1.4",
     "next": "^16.1.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "react-redux": "^9.2.0",
+    "recharts": "^3.7.0",
     "redux": "^5.0.1"
   },
   "devDependencies": {

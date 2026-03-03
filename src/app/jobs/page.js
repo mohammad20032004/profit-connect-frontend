@@ -1,3 +1,5 @@
+'use client';
+
 import { Box, Button, Container, Typography, Avatar } from '@mui/material';
 import { JobCard, JobFilters } from '../../components/jobs';
 

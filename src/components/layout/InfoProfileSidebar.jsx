@@ -1,80 +1,129 @@
 'use client';
 
-import { Paper, Button, Box, Typography, Divider, Avatar, Chip } from "@mui/material";
+import { Paper, Box, Typography, Divider, Avatar, Chip, LinearProgress } from "@mui/material";
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import Image from "next/image";
+import Link from "next/link";
 import { useSelector } from "react-redux";
-
-
-
 
 const MiniProfile = () => {
     return (
         <Paper elevation={0} sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'flex-end',
-            bgcolor: '#240046',
-            borderRadius: 4,
-            height: '50vh',
-            position: 'relative',
+            borderRadius: 2,
             overflow: 'hidden',
+            border: '1px solid #e0e0e0',
+            bgcolor: 'white'
         }}>
+            {/* Cover & Avatar */}
             <Box sx={{
-                bgcolor: 'white', width: '100%', height: '80%', borderTopRightRadius: 15,
-                borderTopLeftRadius: 15, textAlign: 'center',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                border: '1px solid #d0f9ff',
-                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-
+                height: 60,
+                bgcolor: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                background: 'linear-gradient(135deg, #240046 0%, #3c096c 100%)',
+                position: 'relative'
             }}>
-                <Avatar sx={{
-                    width: 80,
-                    height: 80,
-                    border: '4px solid #fff',
-                    mt: -15,
-                }} src="/Images/login-photo.png" />
-                <Box sx={{ padding: 2, paddingTop: 0 }}>
-                    <Typography variant="h6" component="div" sx={{ fontWeight: 'bold' }}>John Doe</Typography>
-                    <Typography variant="body2" component="div" color="#7d7d7d">Front End Developer</Typography>
-                </Box>
-                 <Chip
-                    icon={<VerifiedUserIcon fontSize="16px" />}
-                    label="R-Score: 98"
-                    color="#240046"
-                    variant="outlined" 
-                    className="Reputation_Score"
-                
+                <Avatar 
+                    sx={{
+                        width: 72,
+                        height: 72,
+                        border: '4px solid white',
+                        position: 'absolute',
+                        bottom: -36,
+                        left: '50%',
+                        transform: 'translateX(-50%)'
+                    }} 
+                    src="/Images/login-photo.png" 
                 />
-                <Image src={"/Images/High-Score.gif"} width={60} height={60} alt="Score Icon" />
-                <Divider sx={{ width: '100%', my: 2 }} />
-                <Box sx={{ width: '100%', px: 1.5, display: 'flex', justifyContent: 'space-between' }}
-                >
-                    <Typography variant="body2" component="div" sx={{ mb: 2 }}>
-                        Profile viewers
-                    </Typography>
-                    <strong>3221</strong>
-                </Box>
-                <Box sx={{ width: '100%', px: 1.5, display: 'flex', justifyContent: 'space-between' }}
-                >
-                    <Typography variant="body2" component="div" sx={{ mb: 2 }}>
-                        Post imprission
-                    </Typography><strong>321</strong>
-                </Box>
-               
             </Box>
 
+            {/* Profile Info */}
+            <Box sx={{ pt: 5, pb: 2, px: 2, textAlign: 'center' }}>
+                <Typography variant="h6" sx={{ fontWeight: 700, fontSize: '1rem', mb: 0.5 }}>John Doe</Typography>
+                <Typography variant="body2" sx={{ color: '#666', fontSize: '0.85rem', mb: 2 }}>Front End Developer</Typography>
+                
+                <Chip
+                    icon={<VerifiedUserIcon sx={{ fontSize: 16 }} />}
+                    label="R-Score: 98"
+                    size="small"
+                    sx={{ 
+                        bgcolor: '#f0f0ff', 
+                        color: '#240046',
+                        fontWeight: 700,
+                        border: '1px solid #240046',
+                        mb: 1
+                    }}
+                />
+                <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+                    <Image src="/Images/High-Score.gif" width={50} height={50} alt="Score" />
+                </Box>
+            </Box>
+
+            <Divider />
+
+            {/* Stats */}
+            <Box sx={{ py: 1.5, px: 2 }}>
+                <Link href="/profile" style={{ textDecoration: 'none' }}>
+                    <Box sx={{ 
+                        display: 'flex', 
+                        justifyContent: 'space-between', 
+                        alignItems: 'center',
+                        py: 1,
+                        '&:hover': { bgcolor: '#f5f5f5' },
+                        cursor: 'pointer',
+                        borderRadius: 1,
+                        px: 1
+                    }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            <VisibilityIcon sx={{ fontSize: 18, color: '#666' }} />
+                            <Typography variant="body2" sx={{ fontSize: '0.85rem', color: '#666' }}>Profile viewers</Typography>
+                        </Box>
+                        <Typography sx={{ fontWeight: 700, color: '#00b4d8', fontSize: '0.9rem' }}>3,221</Typography>
+                    </Box>
+                </Link>
+
+                <Box sx={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    alignItems: 'center',
+                    py: 1,
+                    '&:hover': { bgcolor: '#f5f5f5' },
+                    cursor: 'pointer',
+                    borderRadius: 1,
+                    px: 1
+                }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <TrendingUpIcon sx={{ fontSize: 18, color: '#666' }} />
+                        <Typography variant="body2" sx={{ fontSize: '0.85rem', color: '#666' }}>Post impressions</Typography>
+                    </Box>
+                    <Typography sx={{ fontWeight: 700, color: '#00b4d8', fontSize: '0.9rem' }}>12,321</Typography>
+                </Box>
+            </Box>
+
+            <Divider />
+
+            {/* Saved Items */}
+            <Box sx={{ 
+                py: 1.5, 
+                px: 2,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+                '&:hover': { bgcolor: '#f5f5f5' },
+                cursor: 'pointer'
+            }}>
+                <BookmarkBorderIcon sx={{ fontSize: 18, color: '#666' }} />
+                <Typography variant="body2" sx={{ fontSize: '0.85rem', fontWeight: 600 }}>My items</Typography>
+            </Box>
         </Paper>
     )
 }
+
 const InfoPrfileSidebar = () => {
     const info = useSelector((state) => state.user.profile);
-    console.log(info);
     return (
-        <Box component={'div'} sx={{ width: '100%', height: '100vh', p: 2 }}>
+        <Box sx={{ width: '100%', p: 2 }}>
             <MiniProfile />
         </Box>
     )

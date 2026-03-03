@@ -1,3 +1,4 @@
+'use client'
 import { Box, Typography, FormControlLabel, Checkbox, Select, MenuItem, Rating, Button } from '@mui/material';
 
 const CompanyFilter = () => (
