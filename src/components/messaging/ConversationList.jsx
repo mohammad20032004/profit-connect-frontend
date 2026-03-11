@@ -74,7 +74,8 @@ const ConversationList = () => {
                 <Avatar src={conv.avatar} sx={{ width: 48, height: 48 }} />
               </Badge>
             </ListItemAvatar>
-            <ListItemText 
+            <ListItemText
+              disableTypography
               primary={
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <Typography fontWeight={conv.unread > 0 ? 700 : 600} fontSize="0.95rem">{conv.name}</Typography>

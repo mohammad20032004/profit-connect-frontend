@@ -1,24 +1,21 @@
-import { RightSidebar, InfoPrfileSidebar ,MainSection} from '@/components/layout';
+import { InfoPrfileSidebar ,MainSection} from '@/components/layout';
 export default function Home() {
 
 
   return (
-    <main className="page" style={{display: 'flex', justifyContent: 'space-between',padding:2}}>
+    <main className="page" style={{display: 'flex', justifyContent: 'space-between',padding:4}}>
       
-      <section style={{width: '20%', height: '100vh'}}>
+      <section style={{width: '25%', height: '100vh'}}>
       <InfoPrfileSidebar />
 
       </section>
 
-      <section style={{width: '60%', height: '100vh', overflowY: 'scroll'}}>
+      <section style={{width: '75%', height: '100vh', overflowY: 'scroll'}}>
         
         <MainSection />
       </section>
 
-      <section style={{width: '20%', height: '100vh', textAlign: 'center'}}>
-        <RightSidebar />
-
-      </section>
+     
     </main>
   );
 }

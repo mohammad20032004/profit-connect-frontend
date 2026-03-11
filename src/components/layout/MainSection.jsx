@@ -1,6 +1,6 @@
 import React from 'react';
 import { Post } from '../posts';
-
+import { Box } from '@mui/material';
 const postsData = [
   {
     authorName: 'Sarah Johnson',
@@ -90,10 +90,10 @@ const postsData = [
 
 export default function MainSection() {
   return (
-    <>
+    <Box sx={{width: '100%', m: '0 auto', p: 2}}>
       {postsData.map((post, index) => (
-        <Post key={index} {...post} />
+        <Post key={index} {...post}/>
       ))}
-    </>
+    </Box>
   );
 }

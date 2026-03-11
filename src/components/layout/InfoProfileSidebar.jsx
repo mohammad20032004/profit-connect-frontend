@@ -15,7 +15,8 @@ const MiniProfile = () => {
             borderRadius: 2,
             overflow: 'hidden',
             border: '1px solid #e0e0e0',
-            bgcolor: 'white'
+            bgcolor: 'white',
+           width: '100%'
         }}>
             {/* Cover & Avatar */}
             <Box sx={{

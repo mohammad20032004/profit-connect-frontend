@@ -26,6 +26,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import JobHeader from '../jobs/JobHeader';
+import { motion } from 'framer-motion';
 import Logo from '../common/Logo';
 
 const Search = styled('div')(({ theme }) => ({
@@ -106,7 +107,14 @@ const Header = () => {
       }}
     >
       <Container maxWidth="xl">
-        <Toolbar disableGutters sx={{ minHeight: '52px !important', justifyContent: 'space-between' }}>
+        <Toolbar
+          disableGutters
+          sx={{ minHeight: '52px !important', justifyContent: 'space-between' }}
+          component={motion.div}
+          initial={{ y: -40, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.35, ease: 'easeOut' }}
+        >
 
           {/* ========== Left Side: Logo & Search ========== */}
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
