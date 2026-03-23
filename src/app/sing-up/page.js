@@ -3,7 +3,7 @@ import { useState } from 'react';
 import SingupPageStep1 from "@/components/forms/singUp/SingupPageStep1";
 import SingupPageStep2 from "@/components/forms/singUp/SingupPageStep2";
 import SingupPageStep3 from "@/components/forms/singUp/SingupPageStep3";
-
+import { signUp } from "@/services/authService";
 export default function SingUp() {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
@@ -25,14 +25,19 @@ export default function SingUp() {
     console.log('Back to step:', step - 1);
   };
 
-  const handleComplete = (otp) => {
-
+  const handleComplete = async(otp) => {
+   try {
+    const data = await signUp(formData); 
     
-    console.log('Sign up completed!');
-    console.log('Final Data:', { ...formData, otp });
+    alert("تم إنشاء الحساب بنجاح!");
+    console.log(data);
 
-
-  };
+  } catch (error) {
+    alert(error.message); 
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div>

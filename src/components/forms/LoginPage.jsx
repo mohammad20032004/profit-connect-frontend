@@ -212,10 +212,12 @@ export default function LoginPage() {
                                     </Link>
                                 </Box>
 
+                                
                                 {/* Submit Button */}
                                 <LoginButton fullWidth variant="contained" type="submit">
                                     Log In
                                 </LoginButton>
+                             
                             </Stack>
                         </form>
 

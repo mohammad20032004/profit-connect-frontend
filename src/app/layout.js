@@ -2,7 +2,9 @@ import Header from "@/components/layout/Header";
 import StoreProvider from "@/components/StoreProvider";
 import ThemeRegistry from "@/components/ThemeRegistry/ThemeRegistry";
 import PageTransition from "@/components/layout/PageTransition";
+import AOSProvider from "@/components/layout/AOSProvider";
 import "./globals.css";
+import "aos/dist/aos.css";
 
 export const metadata = {
   title: "Profit Connect",
@@ -17,8 +19,10 @@ export default async function LocaleLayout({ children }) {
       <body>
         <StoreProvider>
           <ThemeRegistry>
-            <Header />
-            <PageTransition>{children}</PageTransition>
+            <AOSProvider>
+              <Header />
+              <PageTransition>{children}</PageTransition>
+            </AOSProvider>
           </ThemeRegistry>
         </StoreProvider>
       </body>

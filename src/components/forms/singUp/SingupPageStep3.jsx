@@ -2,11 +2,12 @@
 import React, { useState, useRef } from 'react';
 import {
   Box, Container, Typography, Button, LinearProgress,
-  Paper, Stack, Link, IconButton, Avatar, TextField
+  Paper, Stack, Link, Avatar, TextField
 } from '@mui/material';
 import {
   MarkEmailUnread, ArrowBack, HelpOutline
 } from '@mui/icons-material';
+import SingupHeader from './SingupHeader';
 
 const colors = {
   primary: "#6b10c6",
@@ -23,7 +24,7 @@ export default function SingupPageStep3({ onBack, onComplete }) {
   // معالجة تغيير النص في خانات OTP
   const handleChange = (index, value) => {
     if (isNaN(value)) return; // قبول الأرقام فقط
-    
+
     const newOtp = [...otp];
     newOtp[index] = value.substring(value.length - 1);
     setOtp(newOtp);
@@ -43,36 +44,22 @@ export default function SingupPageStep3({ onBack, onComplete }) {
 
   return (
     <Box sx={{ bgcolor: colors.bgLight, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      
-      {/* 1. Header Area */}
-      <Box sx={{ px: { xs: 2, lg: 20 }, py: 3, display: 'flex', justifyContent: 'center' }}>
-        <Box sx={{ width: '100%', maxWidth: 960, display: 'flex', justifyContent: 'space-between', alignItems: 'center', 
-                   bgcolor: 'white', p: 2, borderRadius: '12px 12px 0 0', borderBottom: '1px solid #ede7f3' }}>
-          <Stack direction="row" spacing={1} alignItems="center">
-            <svg width="24" height="24" viewBox="0 0 48 48" fill={colors.primary}>
-              <path d="M4 4H17.3334V17.3334H30.6666V30.6666H44V44H4V4Z" />
-            </svg>
-            <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#140d1b' }}>CareerPath</Typography>
-          </Stack>
-          <Button variant="contained" sx={{ bgcolor: colors.primary, borderRadius: 2, textTransform: 'none' }}>
-            Help
-          </Button>
-        </Box>
-      </Box>
 
+      {/* 1. Header Area */}
+      <SingupHeader />
       {/* 2. Main Content */}
       <Container maxWidth="xs" sx={{ mt: 2 }}>
         <Paper elevation={0} sx={{ borderRadius: 4, border: '1px solid #ede7f3', overflow: 'hidden' }}>
-          
+
           {/* Progress Bar */}
           <Box sx={{ p: 3, pb: 1 }}>
             <Stack direction="row" justifyContent="space-between" sx={{ mb: 1 }}>
               <Typography variant="body2" sx={{ fontWeight: 'bold' }}>Step 3: Verification</Typography>
               <Typography variant="body2" sx={{ fontWeight: 'bold' }}>100%</Typography>
             </Stack>
-            <LinearProgress 
-              variant="determinate" 
-              value={100} 
+            <LinearProgress
+              variant="determinate"
+              value={100}
               sx={{ height: 8, borderRadius: 4, bgcolor: '#dbcfe7', '& .MuiLinearProgress-bar': { bgcolor: colors.primary } }}
             />
             <Typography variant="caption" sx={{ color: colors.primary, fontWeight: 'bold', mt: 1, display: 'block' }}>
@@ -105,11 +92,11 @@ export default function SingupPageStep3({ onBack, onComplete }) {
                   onKeyDown={(e) => handleKeyDown(index, e)}
                   variant="outlined"
                   placeholder="•"
-                  inputProps={{ 
+                  inputProps={{
                     style: { textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold', padding: '12px 0' },
-                    maxLength: 1 
+                    maxLength: 1
                   }}
-                  sx={{ 
+                  sx={{
                     width: 56, height: 64,
                     '& .MuiOutlinedInput-root': {
                       borderRadius: 2,
@@ -122,18 +109,11 @@ export default function SingupPageStep3({ onBack, onComplete }) {
             </Stack>
 
             {/* Complete Button */}
-            <Button 
-              fullWidth 
-              variant="contained" 
-              onClick={() => onComplete(otp.join(''))}
-              sx={{ 
-                py: 2, bgcolor: colors.primary, borderRadius: 2, fontWeight: 'bold', 
-                fontSize: '1rem', textTransform: 'none', mb: 3,
-                '&:hover': { bgcolor: '#560ca3' }
-              }}
-            >
-              Complete Sign Up
+          <Link href="/" underline="none" onClick={onComplete} sx={{ display: 'block', mb: 2 }}>
+            <Button variant="contained" fullWidth sx={{ bgcolor: colors.primary, fontWeight: 'bold', textTransform: 'none', '&:hover': { bgcolor: '#560ca3' } }}>
+              Complete Profile
             </Button>
+          </Link>
 
             <Typography variant="body2" sx={{ color: colors.textPurple }}>
               Didn't receive the code?{' '}
@@ -146,7 +126,7 @@ export default function SingupPageStep3({ onBack, onComplete }) {
 
         {/* Back Button */}
         <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
-          <Button 
+          <Button
             startIcon={<ArrowBack sx={{ fontSize: 'small' }} />}
             onClick={onBack}
             sx={{ color: colors.textPurple, textTransform: 'none', fontWeight: '500' }}

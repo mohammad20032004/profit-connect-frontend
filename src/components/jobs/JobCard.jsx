@@ -2,23 +2,26 @@
 
 import { Card, Chip, IconButton, Stack, Box, Avatar, Typography, Button } from '@mui/material';
 import { BookmarkBorder, LocationOn } from '@mui/icons-material';
-import { motion } from 'framer-motion';
-
-const MotionCard = motion(Card);
 
 const JobCard = ({ title, company, location, salary, tags, logo }) => (
-  <MotionCard
+  <Card
     elevation={0}
-    whileHover={{ y: -4, boxShadow: '0 8px 28px rgba(15,23,42,0.12)' }}
-    whileTap={{ scale: 0.98 }}
-    transition={{ duration: 0.18, ease: 'easeOut' }}
-    layout
+    data-aos="fade-up"
+    data-aos-duration="450"
     sx={{
       p: 3,
       mb: 2,
       borderRadius: 3,
       border: '1px solid #f0f0f0',
       backgroundColor: '#ffffff',
+      transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+      '&:hover': {
+        transform: 'translateY(-4px)',
+        boxShadow: '0 8px 28px rgba(15,23,42,0.12)',
+      },
+      '&:active': {
+        transform: 'scale(0.99)',
+      },
     }}
   >
     <Box sx={{ display: 'flex', gap: 2.5 }}>
@@ -130,6 +133,6 @@ const JobCard = ({ title, company, location, salary, tags, logo }) => (
         </Box>
       </Box>
     </Box>
-  </MotionCard>
+  </Card>
 );
 export default JobCard;

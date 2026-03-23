@@ -18,7 +18,7 @@ const themeColors = {
 };
 
 export default function SingupPageStep2({ onNext, onBack, data }) {
-  const [selectedRole, setSelectedRole] = useState(data?.role || 'student');
+  const [selectedRole, setSelectedRole] = useState(data?.role || 'Student');
 
   const handleNext = () => {
     console.log('Step 2 Data:', { role: selectedRole });
@@ -79,8 +79,8 @@ export default function SingupPageStep2({ onNext, onBack, data }) {
                 title="I am a Student"
                 description="Exploring internships, graduate programs, and entry-level career opportunities."
                 icon={<School sx={{ fontSize: 40 }} />}
-                selected={selectedRole === 'student'}
-                onClick={() => setSelectedRole('student')}
+                selected={selectedRole === 'Student'}
+                onClick={() => setSelectedRole('Student')}
                 accentColor={themeColors.accentCyan}
               />
             </Grid>
@@ -90,8 +90,8 @@ export default function SingupPageStep2({ onNext, onBack, data }) {
                 title="I am a Professional"
                 description="Looking for career growth, management roles, or making a mid-level industry switch."
                 icon={<Work sx={{ fontSize: 40 }} />}
-                selected={selectedRole === 'professional'}
-                onClick={() => setSelectedRole('professional')}
+                selected={selectedRole === 'Professional'}
+                onClick={() => setSelectedRole('Professional')}
                 accentColor={themeColors.primary}
               />
             </Grid>

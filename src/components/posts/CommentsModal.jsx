@@ -64,7 +64,7 @@ const CommentsModal = ({ open, onClose, comments = [], postAuthor }) => {
             </Stack>
           ) : (
             <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 4 }}>
-              لا توجد تعليقات بعد. كن أول من يعلق!
+             No Comment Yet!
             </Typography>
           )}
         </Box>
@@ -78,7 +78,7 @@ const CommentsModal = ({ open, onClose, comments = [], postAuthor }) => {
             fullWidth
             multiline
             maxRows={4}
-            placeholder="أضف تعليقاً..."
+            placeholder="Add Comment..."
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
             variant="outlined"

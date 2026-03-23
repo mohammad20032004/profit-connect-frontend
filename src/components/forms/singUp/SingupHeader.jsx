@@ -1,6 +1,7 @@
 import React from 'react'
 import { Box, Typography, Stack , Button} from '@mui/material';
 import Image from 'next/image';
+import Link from 'next/link';
 export default function SingupHeader() {
 
 const themeColors = {
@@ -27,12 +28,14 @@ const themeColors = {
              <Typography variant="body2" color="text.secondary" sx={{ display: { xs: 'none', sm: 'block' } }}>
                Already have an account?
              </Typography>
+             <Link href="/log-in">
+             
              <Button variant="contained" sx={{ 
                bgcolor: themeColors.primary, fontWeight: 'bold', textTransform: 'none',
                '&:hover': { bgcolor: '#560ca3' }
              }}>
                Log In
-             </Button>
+             </Button></Link>
            </Stack>
          </Box>
   )

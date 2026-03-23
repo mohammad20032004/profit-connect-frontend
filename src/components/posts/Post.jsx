@@ -21,10 +21,7 @@ import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import SendIcon from '@mui/icons-material/Send';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import { motion } from 'framer-motion';
 import CommentsModal from './CommentsModal';
-
-const MotionCard = motion(Card);
 
 const ActionButton = styled(Button)(({ theme }) => ({
   textTransform: 'none',
@@ -70,19 +67,20 @@ const Post = ({
   };
 
   return (
-    <MotionCard
-      layout
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -12 }}
-      transition={{ duration: 0.25, ease: 'easeOut' }}
-      whileHover={{ y: -4, boxShadow: '0 8px 28px rgba(15,23,42,0.12)' }}
+    <Card
+      data-aos="fade-up"
+      data-aos-duration="500"
       sx={{
         maxWidth: '100%',
         borderRadius: '8px',
         boxShadow: '0px 0px 0px 1px rgba(0,0,0,0.08)',
         mb: 2,
         backgroundColor: '#ffffff',
+        transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+        '&:hover': {
+          transform: 'translateY(-4px)',
+          boxShadow: '0 8px 28px rgba(15,23,42,0.12)',
+        },
       }}
     >
 
@@ -138,21 +136,20 @@ const Post = ({
 
       {postImage && (
         <Box
-          component={motion.img}
+          component="img"
           src={postImage}
           alt="Post content"
-          initial={{ opacity: 0.8, scale: 1.01 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.25 }}
-          whileHover={{ scale: 1.01 }}
-          style={{ willChange: 'transform' }}
           sx={{
             width: '100%',
             height: 'auto',
             display: 'block',
             mt: 1,
             maxHeight: '500px',
-            objectFit: 'cover'
+            objectFit: 'cover',
+            transition: 'transform 0.2s ease',
+            '&:hover': {
+              transform: 'scale(1.01)',
+            },
           }}
         />
       )}
@@ -210,7 +207,7 @@ const Post = ({
         postAuthor={authorName}
       />
 
-    </MotionCard>
+    </Card>
   );
 };
 
