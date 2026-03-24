@@ -87,7 +87,7 @@ const navItems = [
 const Header = () => {
   const pathname = usePathname();
   // أضفنا '/sign-out' للقائمة
-  const hiddenRoutes = ['/log-in', '/sing-up', '/sign-out','/messaging'];
+  const hiddenRoutes = ['/log-in', '/sing-up', '/sign-out','/messaging','/landing'];
   const jobRoutes = ['/jobs', '/jobs/search', '/jobs/post'];
 
   const isJobRoute = jobRoutes.some((route) => pathname.startsWith(route));

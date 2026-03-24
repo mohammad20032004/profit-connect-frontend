@@ -5,7 +5,7 @@ import {
   Paper, Stack, Link, Avatar, TextField
 } from '@mui/material';
 import {
-  MarkEmailUnread, ArrowBack, HelpOutline
+  MarkEmailUnread, ArrowBack
 } from '@mui/icons-material';
 import SingupHeader from './SingupHeader';
 
@@ -16,7 +16,7 @@ const colors = {
   borderLight: "#dbcfe7",
 };
 
-export default function SingupPageStep3({ onBack, onComplete }) {
+export default function SingupPageStep3({ onBack, onComplete, loading = false }) {
   // مصفوفة لتخزين الأرقام الأربعة
   const [otp, setOtp] = useState(['', '', '', '']);
   const inputRefs = useRef([]);
@@ -109,14 +109,28 @@ export default function SingupPageStep3({ onBack, onComplete }) {
             </Stack>
 
             {/* Complete Button */}
-          <Link href="/" underline="none" onClick={onComplete} sx={{ display: 'block', mb: 2 }}>
-            <Button variant="contained" fullWidth sx={{ bgcolor: colors.primary, fontWeight: 'bold', textTransform: 'none', '&:hover': { bgcolor: '#560ca3' } }}>
-              Complete Profile
+          <Link
+            href="#"
+            underline="none"
+            onClick={(event) => {
+              event.preventDefault();
+              if (loading) return;
+              onComplete();
+            }}
+            sx={{ display: 'block', mb: 2 }}
+          >
+            <Button
+              variant="contained"
+              fullWidth
+              disabled={loading}
+              sx={{ bgcolor: colors.primary, fontWeight: 'bold', textTransform: 'none', '&:hover': { bgcolor: '#560ca3' } }}
+            >
+              {loading ? 'Creating Account...' : 'Complete Profile'}
             </Button>
           </Link>
 
             <Typography variant="body2" sx={{ color: colors.textPurple }}>
-              Didn't receive the code?{' '}
+              Didn&apos;t receive the code?{' '}
               <Link href="#" sx={{ color: colors.primary, fontWeight: 'bold', textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>
                 Resend Code
               </Link>
