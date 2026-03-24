@@ -1,21 +1,84 @@
-import { Box, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Stack,
+  Typography,
+} from '@mui/material';
 
-const JobSidebar = () => (
+const jobTypeOptions = ['Full-time', 'Part-time', 'Contract', 'Internship', 'Freelance'];
+const workPlaceOptions = ['On-site', 'Remote', 'Hybrid'];
+const workLevelOptions = ['Entry', 'Mid', 'Senior', 'Director', 'VP'];
+
+const JobSidebar = ({ filters, onFilterChange, onClear }) => (
   <Box sx={{ p: 3, bgcolor: 'white', borderRadius: 3, border: '1px solid #e6f2f4' }}>
-    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
+    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
       <Typography sx={{ fontWeight: 700 }}>Filter By</Typography>
-      <Typography sx={{ color: '#00b2d6', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}>Clear all</Typography>
+      <Button
+        onClick={onClear}
+        size="small"
+        sx={{ color: '#00b2d6', fontSize: '0.75rem', fontWeight: 700 }}
+      >
+        Clear all
+      </Button>
     </Box>
-    
-    <Typography sx={{ fontSize: '0.875rem', fontWeight: 700, mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
-      Work Type
-    </Typography>
-    {['Remote', 'On-site'].map((type) => (
-      <Box key={type} sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-        <input type="checkbox" style={{ accentColor: '#00b2d6', width: 18, height: 18 }} />
-        <Typography sx={{ ml: 1, fontSize: '0.875rem' }}>{type}</Typography>
-      </Box>
-    ))}
+
+    <Stack spacing={2.5}>
+      <FormControl fullWidth size="small">
+        <InputLabel id="job-type-label">Job Type</InputLabel>
+        <Select
+          labelId="job-type-label"
+          value={filters.type}
+          label="Job Type"
+          onChange={(event) => onFilterChange('type', event.target.value)}
+        >
+          <MenuItem value="">All</MenuItem>
+          {jobTypeOptions.map((option) => (
+            <MenuItem key={option} value={option}>
+              {option}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+
+      <FormControl fullWidth size="small">
+        <InputLabel id="work-place-label">Work Place</InputLabel>
+        <Select
+          labelId="work-place-label"
+          value={filters.workPlace}
+          label="Work Place"
+          onChange={(event) => onFilterChange('workPlace', event.target.value)}
+        >
+          <MenuItem value="">All</MenuItem>
+          {workPlaceOptions.map((option) => (
+            <MenuItem key={option} value={option}>
+              {option}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+
+      <FormControl fullWidth size="small">
+        <InputLabel id="work-level-label">Work Level</InputLabel>
+        <Select
+          labelId="work-level-label"
+          value={filters.workLevel}
+          label="Work Level"
+          onChange={(event) => onFilterChange('workLevel', event.target.value)}
+        >
+          <MenuItem value="">All</MenuItem>
+          {workLevelOptions.map((option) => (
+            <MenuItem key={option} value={option}>
+              {option}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    </Stack>
   </Box>
 );
+
 export default JobSidebar;

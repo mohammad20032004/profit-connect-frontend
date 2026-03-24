@@ -1,35 +1,52 @@
 'use client'
-import { Box, Typography, FormControlLabel, Checkbox, Select, MenuItem, Rating, Button } from '@mui/material';
+import { Box, Typography, Select, MenuItem, Button, FormControl, InputLabel, Stack } from '@mui/material';
 
-const CompanyFilter = () => (
+const CompanyFilter = ({ filters, onFilterChange, onReset }) => (
   <Box sx={{ width: { lg: 280 }, flexShrink: 0 }}>
     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
       <Typography variant="h6" sx={{ fontWeight: 700, color: '#250047' }}>Filter Companies</Typography>
-      <Button size="small" sx={{ color: '#64748b', textTransform: 'none', textDecoration: 'underline' }}>Reset</Button>
+      <Button
+        size="small"
+        onClick={onReset}
+        sx={{ color: '#64748b', textTransform: 'none', textDecoration: 'underline' }}
+      >
+        Reset
+      </Button>
     </Box>
 
-    <Typography sx={{ fontSize: '0.875rem', fontWeight: 700, color: '#334155', mb: 1 }}>Location</Typography>
-    <Select fullWidth size="small" defaultValue="Worldwide" sx={{ mb: 4, bgcolor: 'white' }}>
-      <MenuItem value="Worldwide">Worldwide</MenuItem>
-      <MenuItem value="USA">United States</MenuItem>
-    </Select>
+    <Stack spacing={2}>
+      <FormControl fullWidth size="small">
+        <InputLabel id="company-status-label">Status</InputLabel>
+        <Select
+          labelId="company-status-label"
+          value={filters.status}
+          label="Status"
+          onChange={(event) => onFilterChange('status', event.target.value)}
+          sx={{ bgcolor: 'white' }}
+        >
+          <MenuItem value="">All</MenuItem>
+          <MenuItem value="Pending">Pending</MenuItem>
+          <MenuItem value="Approved">Approved</MenuItem>
+          <MenuItem value="Rejected">Rejected</MenuItem>
+        </Select>
+      </FormControl>
 
-    <Typography sx={{ fontSize: '0.875rem', fontWeight: 700, color: '#334155', mb: 1 }}>Industry</Typography>
-    <Box sx={{ display: 'flex', flexDirection: 'column', mb: 4 }}>
-      {['Technology', 'Finance', 'Healthcare', 'Education'].map((label) => (
-        <FormControlLabel 
-          key={label} 
-          control={<Checkbox size="small" sx={{ color: '#cbd5e1', '&.Mui-checked': { color: '#250047' } }} />} 
-          label={<Typography sx={{ fontSize: '0.875rem', color: '#475569' }}>{label}</Typography>} 
-        />
-      ))}
-    </Box>
-
-    <Typography sx={{ fontSize: '0.875rem', fontWeight: 700, color: '#334155', mb: 1 }}>Star Rating</Typography>
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-      <Rating value={4} readOnly size="small" sx={{ color: '#06b6d4' }} />
-      <Typography variant="caption" sx={{ color: '#64748b' }}>& Up</Typography>
-    </Box>
+      <FormControl fullWidth size="small">
+        <InputLabel id="company-verified-label">Verification</InputLabel>
+        <Select
+          labelId="company-verified-label"
+          value={filters.isVerified}
+          label="Verification"
+          onChange={(event) => onFilterChange('isVerified', event.target.value)}
+          sx={{ bgcolor: 'white' }}
+        >
+          <MenuItem value="">All</MenuItem>
+          <MenuItem value="verified">Verified</MenuItem>
+          <MenuItem value="unverified">Unverified</MenuItem>
+        </Select>
+      </FormControl>
+    </Stack>
   </Box>
 );
+
 export default CompanyFilter;

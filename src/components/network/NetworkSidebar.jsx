@@ -1,11 +1,11 @@
 import React from 'react';
-import { Card, List, ListItemButton, ListItemIcon, ListItemText, Typography, Divider, Button, Box } from '@mui/material';
+import { Card, List, ListItemButton, ListItemIcon, ListItemText, Typography, Divider, Box } from '@mui/material';
 import PeopleIcon from '@mui/icons-material/People';
 import ContactsIcon from '@mui/icons-material/Contacts';
 import GroupsIcon from '@mui/icons-material/Groups';
 import EventIcon from '@mui/icons-material/Event';
 
-export default function NetworkSidebar() {
+export default function NetworkSidebar({ connectionsCount = 0, requestsCount = 0 }) {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
       <Card variant="outlined" sx={{ borderRadius: 3, border: '1px solid #e2e8f0', bgcolor: 'white' }}>
@@ -21,15 +21,15 @@ export default function NetworkSidebar() {
           }}>
             <ListItemIcon><PeopleIcon sx={{ color: '#240046' }} /></ListItemIcon>
             <ListItemText primary="Connections" primaryTypographyProps={{ fontSize: '0.9rem', fontWeight: 500 }} />
-            <Typography sx={{ fontSize: '0.8rem', color: '#64748b' }}>1,240</Typography>
+            <Typography sx={{ fontSize: '0.8rem', color: '#64748b' }}>{connectionsCount}</Typography>
           </ListItemButton>
           
           <Divider sx={{ mx: 2, opacity: 0.5 }} />
 
           <ListItemButton>
             <ListItemIcon><ContactsIcon sx={{ color: '#94a3b8' }} /></ListItemIcon>
-            <ListItemText primary="Contacts" primaryTypographyProps={{ fontSize: '0.9rem' }} />
-            <Typography sx={{ fontSize: '0.8rem', color: '#94a3b8' }}>482</Typography>
+            <ListItemText primary="Invitations" primaryTypographyProps={{ fontSize: '0.9rem' }} />
+            <Typography sx={{ fontSize: '0.8rem', color: '#94a3b8' }}>{requestsCount}</Typography>
           </ListItemButton>
 
           <ListItemButton>
@@ -45,24 +45,10 @@ export default function NetworkSidebar() {
         </List>
       </Card>
 
-      <Card variant="outlined" sx={{ borderRadius: 3, p: 2, textAlign: 'center', border: '1px solid #e2e8f0' }}>
-        <Typography sx={{ fontSize: '0.75rem', color: '#64748b', mb: 1.5 }}>
-          Add personal contacts to find connections faster.
+      <Card variant="outlined" sx={{ borderRadius: 3, p: 2, border: '1px solid #e2e8f0', bgcolor: '#fafcff' }}>
+        <Typography sx={{ fontSize: '0.82rem', color: '#64748b', lineHeight: 1.7 }}>
+          Invitations and accepted connections on this page now come directly from the network API.
         </Typography>
-        <Button 
-          variant="outlined" 
-          fullWidth 
-          sx={{ 
-            borderRadius: 20, 
-            borderColor: '#00B4D8', 
-            color: '#00B4D8', 
-            fontWeight: 'bold',
-            textTransform: 'none',
-            '&:hover': { borderColor: '#00B4D8', bgcolor: 'rgba(0, 180, 216, 0.05)' }
-          }}
-        >
-          Add Contacts
-        </Button>
       </Card>
     </Box>
   );
