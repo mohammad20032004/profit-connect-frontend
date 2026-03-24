@@ -8,7 +8,7 @@ import {
   Visibility, VisibilityOff, ChevronRight, 
   Person, Work, CheckCircle 
 } from '@mui/icons-material';
-import SingupHeader from './SingupHeader';
+import SignupHeader from './SignupHeader';
 
 
 const colors = {
@@ -19,7 +19,7 @@ const colors = {
   borderLight: "#dccdea"
 };
 
-export default function SingupPageStep1({ onNext, data }) {
+export default function SignupPageStep1({ onNext, data }) {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     firstName: data?.firstName || '',
@@ -37,7 +37,7 @@ export default function SingupPageStep1({ onNext, data }) {
   return (
     <Box sx={{ bgcolor: colors.bgLight, minHeight: '100vh' }}>
       {/* Header */}
-<SingupHeader />
+<SignupHeader />
       {/* Main Form Container */}
       <Container maxWidth="md" sx={{ mt: 6 }}>
         <Paper elevation={0} sx={{ 
@@ -159,7 +159,7 @@ export default function SingupPageStep1({ onNext, data }) {
         </Paper>
 
         <Typography sx={{ mt: 4, textAlign: 'center', fontSize: '0.875rem', color: colors.textPurple }}>
-          By continuing, you agree to CareerPath's <Link href="#" sx={{ color: colors.primary, fontWeight: 'bold' }}>Terms of Service</Link> and <Link href="#" sx={{ color: colors.primary, fontWeight: 'bold' }}>Privacy Policy</Link>.
+          By continuing, you agree to CareerPath&apos;s <Link href="#" sx={{ color: colors.primary, fontWeight: 'bold' }}>Terms of Service</Link> and <Link href="#" sx={{ color: colors.primary, fontWeight: 'bold' }}>Privacy Policy</Link>.
         </Typography>
       </Container>
     </Box>

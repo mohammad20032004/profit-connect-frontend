@@ -2,12 +2,12 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/navigation';
-import SingupPageStep1 from "@/components/forms/singUp/SingupPageStep1";
-import SingupPageStep2 from "@/components/forms/singUp/SingupPageStep2";
-import SingupPageStep3 from "@/components/forms/singUp/SingupPageStep3";
+import SignupPageStep1 from "@/components/forms/signup/SignupPageStep1";
+import SignupPageStep2 from "@/components/forms/signup/SignupPageStep2";
+import SignupPageStep3 from "@/components/forms/signup/SignupPageStep3";
 import { signUp } from "@/services/authService";
 import { setAuthData } from "@/lib/features/userSlice";
-export default function SingUp() {
+export default function SignUp() {
   const dispatch = useDispatch();
   const router = useRouter();
   const [step, setStep] = useState(1);
@@ -55,9 +55,9 @@ export default function SingUp() {
 
   return (
     <div>
-      {step === 1 && <SingupPageStep1 onNext={handleNext} data={formData} />}
-      {step === 2 && <SingupPageStep2 onNext={handleNext} onBack={handleBack} data={formData} />}
-      {step === 3 && <SingupPageStep3 onBack={handleBack} onComplete={handleComplete} loading={loading} />}
+      {step === 1 && <SignupPageStep1 onNext={handleNext} data={formData} />}
+      {step === 2 && <SignupPageStep2 onNext={handleNext} onBack={handleBack} data={formData} />}
+      {step === 3 && <SignupPageStep3 onBack={handleBack} onComplete={handleComplete} loading={loading} />}
     </div>
   );
 }

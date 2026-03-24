@@ -133,7 +133,7 @@ const MiniProfile = () => {
     )
 }
 
-const InfoPrfileSidebar = () => {
+const ProfileSidebar = () => {
     return (
         <Box sx={{ width: '100%', p: 2 }}>
             <MiniProfile />
@@ -141,4 +141,4 @@ const InfoPrfileSidebar = () => {
     )
 };
 
-export default InfoPrfileSidebar;
+export default ProfileSidebar;

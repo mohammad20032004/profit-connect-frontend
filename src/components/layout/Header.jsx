@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   AppBar,
   Toolbar,
@@ -11,7 +11,12 @@ import {
   Container,
   Stack,
   Badge,
-  IconButton
+  IconButton,
+  Divider,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
@@ -22,11 +27,15 @@ import MessageIcon from '@mui/icons-material/Message';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import AppsIcon from '@mui/icons-material/Apps'; // For the "Business" grid icon
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import Image from 'next/image';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { useDispatch, useSelector } from 'react-redux';
 import JobHeader from '../jobs/JobHeader';
 import Logo from '../common/Logo';
+import { clearUserProfile } from '@/lib/features/userSlice';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -80,18 +89,57 @@ const navItems = [
   { label: 'Home', icon: <HomeIcon />, hasBadge: false, link: '/' },
   { label: 'Network', icon: <PeopleIcon />, hasBadge: false, link: '/network' },
   { label: 'Jobs', icon: <WorkIcon />, hasBadge: false, link: '/jobs' },
-  { label: 'Messaging', icon: <MessageIcon />, hasBadge: false, link: 'messaging' },
-  { label: 'Alerts', icon: <NotificationsIcon />, hasBadge: true, link: 'alerts' },
+  { label: 'Messaging', icon: <MessageIcon />, hasBadge: false, link: '/messaging' },
+  { label: 'Alerts', icon: <NotificationsIcon />, hasBadge: true, link: '/alerts' },
 ];
 
 const Header = () => {
   const pathname = usePathname();
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.user);
+  const profile = useSelector((state) => state.user.profile);
+  const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
+  const [anchorEl, setAnchorEl] = useState(null);
   // أضفنا '/sign-out' للقائمة
-  const hiddenRoutes = ['/log-in', '/sing-up', '/sign-out','/messaging','/landing'];
+  const hiddenRoutes = ['/log-in', '/sign-up', '/sign-out', '/messaging', '/landing'];
   const jobRoutes = ['/jobs', '/jobs/search', '/jobs/post'];
+  const menuOpen = Boolean(anchorEl);
+
+  const fullName = useMemo(
+    () =>
+      profile?.fullname ||
+      [profile?.firstName, profile?.lastName].filter(Boolean).join(' ') ||
+      user?.username ||
+      'My Profile',
+    [profile, user]
+  );
+
+  const subLabel = user?.email || user?.role || 'View profile';
+  const avatarSrc = profile?.avatar ? `/Images/${profile.avatar}` : undefined;
 
   const isJobRoute = jobRoutes.some((route) => pathname.startsWith(route));
   const shouldHideHeader = hiddenRoutes.some((route) => pathname.startsWith(route));
+
+  const handleOpenMenu = (event) => {
+    if (!isAuthenticated) {
+      router.push('/log-in');
+      return;
+    }
+
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    window.localStorage.removeItem('profit_connect_token');
+    dispatch(clearUserProfile());
+    handleCloseMenu();
+    router.push('/landing');
+  };
 
   if (shouldHideHeader) return null;
   if (isJobRoute) return <JobHeader />;
@@ -177,7 +225,9 @@ const Header = () => {
             })}
 
             {/* Profile Dropdown */}
-            <Box sx={{
+            <Box
+              onClick={handleOpenMenu}
+              sx={{
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
@@ -188,10 +238,12 @@ const Header = () => {
               cursor: 'pointer'
             }}>
               <Avatar
-                alt="User Profile"
-                src="https://i.pravatar.cc/150?img=68"
+                alt={fullName}
+                src={avatarSrc}
                 sx={{ width: 24, height: 24 }}
-              />
+              >
+                {fullName?.charAt(0)?.toUpperCase()}
+              </Avatar>
               <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
                 <Typography variant="caption" sx={{ color: '#666', fontSize: '12px' }}>
                   Me
@@ -219,6 +271,77 @@ const Header = () => {
 
         </Toolbar>
       </Container>
+
+      <Menu
+        anchorEl={anchorEl}
+        open={menuOpen}
+        onClose={handleCloseMenu}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+        PaperProps={{
+          elevation: 0,
+          sx: {
+            mt: 1.5,
+            minWidth: 280,
+            borderRadius: 3,
+            border: '1px solid #e7e7e7',
+            boxShadow: '0 18px 40px rgba(15, 23, 42, 0.12)',
+            overflow: 'visible',
+          },
+        }}
+      >
+        <Box sx={{ px: 2, py: 1.8 }}>
+          <Stack direction="row" spacing={1.5} alignItems="center">
+            <Avatar src={avatarSrc} sx={{ width: 44, height: 44 }}>
+              {fullName?.charAt(0)?.toUpperCase()}
+            </Avatar>
+            <Box sx={{ minWidth: 0 }}>
+              <Typography sx={{ fontWeight: 800, color: '#191919' }} noWrap>
+                {fullName}
+              </Typography>
+              <Typography variant="body2" sx={{ color: '#666' }} noWrap>
+                {subLabel}
+              </Typography>
+            </Box>
+          </Stack>
+        </Box>
+
+        <Divider />
+
+        <MenuItem
+          component={Link}
+          href="/profile"
+          onClick={handleCloseMenu}
+          sx={{ py: 1.4, px: 2 }}
+        >
+          <ListItemIcon>
+            <PersonOutlineIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText
+            primary="View Profile"
+            secondary="Open your public and personal profile data"
+          />
+        </MenuItem>
+
+        <MenuItem onClick={handleCloseMenu} sx={{ py: 1.4, px: 2 }}>
+          <ListItemIcon>
+            <SettingsOutlinedIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText
+            primary="Account Settings"
+            secondary="Settings screen will be added next"
+          />
+        </MenuItem>
+
+        <Divider />
+
+        <MenuItem onClick={handleLogout} sx={{ py: 1.4, px: 2, color: '#b42318' }}>
+          <ListItemIcon sx={{ color: '#b42318' }}>
+            <LogoutRoundedIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText primary="Sign Out" secondary="Remove session from this device" />
+        </MenuItem>
+      </Menu>
     </AppBar>
   );
 };

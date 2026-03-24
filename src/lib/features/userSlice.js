@@ -5,6 +5,7 @@ const initialState = {
   user: null,
   profile: null,
   isAuthenticated: false,
+  authChecked: false,
 };
 
 const userSlice = createSlice({
@@ -18,6 +19,10 @@ const userSlice = createSlice({
       state.user = user;
       state.profile = user?.profile ?? null;
       state.isAuthenticated = Boolean(token && user);
+      state.authChecked = true;
+    },
+    setAuthChecked: (state, action) => {
+      state.authChecked = action.payload ?? true;
     },
     setUserProfile: (state, action) => {
       state.profile = action.payload;
@@ -31,6 +36,7 @@ const userSlice = createSlice({
       state.user = null;
       state.profile = null;
       state.isAuthenticated = false;
+      state.authChecked = true;
     },
     updateUserProfile: (state, action) => {
       if (!state.profile) {
@@ -53,5 +59,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { setAuthData, setUserProfile, clearUserProfile, updateUserProfile } = userSlice.actions;
+export const { setAuthData, setAuthChecked, setUserProfile, clearUserProfile, updateUserProfile } = userSlice.actions;
 export default userSlice.reducer;

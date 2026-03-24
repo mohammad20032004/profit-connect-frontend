@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useRouter } from 'next/navigation';
 import {
     Box,
     Grid,
@@ -23,6 +25,8 @@ import SchoolIcon from '@mui/icons-material/School'; // أيقونة قبعة ا
 import GoogleIcon from '@mui/icons-material/Google';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import Image from 'next/image';
+import { login } from '@/services/authService';
+import { setAuthData } from '@/lib/features/userSlice';
 
 // 1. تخصيص حقل الإدخال ليطابق التصميم (حواف ناعمة وخلفية بيضاء)
 const LoginTextField = styled(TextField)({
@@ -69,8 +73,37 @@ const SocialButton = styled(Button)({
 });
 
 export default function LoginPage() {
+    const dispatch = useDispatch();
+    const router = useRouter();
     const [showPassword, setShowPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [formData, setFormData] = useState({
+        email: '',
+        password: '',
+    });
     const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        setLoading(true);
+
+        try {
+            const data = await login(formData);
+
+            dispatch(setAuthData({
+                token: data?.token,
+                user: data?.user,
+            }));
+
+            localStorage.setItem('profit_connect_token', data?.token);
+            alert('تم تسجيل الدخول بنجاح!');
+            router.push('/');
+        } catch (error) {
+            alert(error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <Container maxWidth={'xl'} sx={{ width: '100%', height: '100vh', py: 4 }}>
@@ -161,7 +194,7 @@ export default function LoginPage() {
                             Please enter your details to sign in.
                         </Typography>
 
-                        <form noValidate>
+                        <form noValidate onSubmit={handleSubmit}>
                             <Stack spacing={3}>
 
                                 {/* Email Input */}
@@ -174,6 +207,8 @@ export default function LoginPage() {
                                         placeholder="name@company.com"
                                         variant="outlined"
                                         type="email"
+                                        value={formData.email}
+                                        onChange={(event) => setFormData((prev) => ({ ...prev, email: event.target.value }))}
                                     />
                                 </Box>
 
@@ -186,6 +221,8 @@ export default function LoginPage() {
                                         fullWidth
                                         placeholder="••••••••"
                                         type={showPassword ? 'text' : 'password'}
+                                        value={formData.password}
+                                        onChange={(event) => setFormData((prev) => ({ ...prev, password: event.target.value }))}
                                         InputProps={{
                                             endAdornment: (
                                                 <InputAdornment position="end">
@@ -214,8 +251,8 @@ export default function LoginPage() {
 
                                 
                                 {/* Submit Button */}
-                                <LoginButton fullWidth variant="contained" type="submit">
-                                    Log In
+                                <LoginButton fullWidth variant="contained" type="submit" disabled={loading}>
+                                    {loading ? 'Signing In...' : 'Log In'}
                                 </LoginButton>
                              
                             </Stack>
@@ -239,8 +276,8 @@ export default function LoginPage() {
                         {/* Footer */}
                         <Box sx={{ mt: 4, textAlign: 'center' }}>
                             <Typography variant="body2" color="text.secondary">
-                                Don't have an account?{' '}
-                                <Link href="/register" underline="hover" sx={{ color: '#00B4D8', fontWeight: 'bold' }}>
+                                Don&apos;t have an account?{' '}
+                                <Link href="/sign-up" underline="hover" sx={{ color: '#00B4D8', fontWeight: 'bold' }}>
                                     Sign up
                                 </Link>
                             </Typography>

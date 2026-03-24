@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Modal,
   Box,
@@ -16,14 +17,25 @@ import CloseIcon from '@mui/icons-material/Close';
 import SendIcon from '@mui/icons-material/Send';
 import Comment from './Comment';
 
-const CommentsModal = ({ open, onClose, comments = [], postAuthor }) => {
+const CommentsModal = ({ open, onClose, comments = [], postAuthor, onAddComment }) => {
+  const profile = useSelector((state) => state.user.profile);
+  const user = useSelector((state) => state.user.user);
   const [newComment, setNewComment] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleAddComment = () => {
-    if (newComment.trim()) {
-      // هنا يمكنك إضافة المنطق لإضافة التعليق
-      console.log('New comment:', newComment);
+  const avatarSrc = profile?.avatar ? `/Images/${profile.avatar}` : undefined;
+
+  const handleAddComment = async () => {
+    if (!newComment.trim()) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await onAddComment?.(newComment.trim());
       setNewComment('');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -45,7 +57,7 @@ const CommentsModal = ({ open, onClose, comments = [], postAuthor }) => {
         {/* Header */}
         <Box sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-            {postAuthor}'s post
+            {postAuthor}&apos;s post
           </Typography>
           <IconButton onClick={onClose} size="small">
             <CloseIcon />
@@ -73,7 +85,9 @@ const CommentsModal = ({ open, onClose, comments = [], postAuthor }) => {
 
         {/* Add Comment */}
         <Box sx={{ p: 2, display: 'flex', gap: 1, alignItems: 'flex-start' }}>
-          <Avatar sx={{ width: 32, height: 32 }} src="https://i.pravatar.cc/150?img=68" />
+          <Avatar sx={{ width: 32, height: 32 }} src={avatarSrc}>
+            {user?.username?.charAt(0)?.toUpperCase()}
+          </Avatar>
           <TextField
             fullWidth
             multiline
@@ -88,7 +102,7 @@ const CommentsModal = ({ open, onClose, comments = [], postAuthor }) => {
           <Button
             variant="contained"
             onClick={handleAddComment}
-            disabled={!newComment.trim()}
+            disabled={!newComment.trim() || loading}
             sx={{
               minWidth: 'auto',
               px: 2,

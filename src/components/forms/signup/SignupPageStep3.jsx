@@ -7,7 +7,7 @@ import {
 import {
   MarkEmailUnread, ArrowBack
 } from '@mui/icons-material';
-import SingupHeader from './SingupHeader';
+import SignupHeader from './SignupHeader';
 
 const colors = {
   primary: "#6b10c6",
@@ -16,7 +16,7 @@ const colors = {
   borderLight: "#dbcfe7",
 };
 
-export default function SingupPageStep3({ onBack, onComplete, loading = false }) {
+export default function SignupPageStep3({ onBack, onComplete, loading = false }) {
   // مصفوفة لتخزين الأرقام الأربعة
   const [otp, setOtp] = useState(['', '', '', '']);
   const inputRefs = useRef([]);
@@ -46,7 +46,7 @@ export default function SingupPageStep3({ onBack, onComplete, loading = false })
     <Box sx={{ bgcolor: colors.bgLight, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
 
       {/* 1. Header Area */}
-      <SingupHeader />
+      <SignupHeader />
       {/* 2. Main Content */}
       <Container maxWidth="xs" sx={{ mt: 2 }}>
         <Paper elevation={0} sx={{ borderRadius: 4, border: '1px solid #ede7f3', overflow: 'hidden' }}>

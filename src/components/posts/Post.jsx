@@ -41,6 +41,7 @@ const ActionButton = styled(Button)(({ theme }) => ({
 }));
 
 const Post = ({
+  id,
   authorName,
   authorHeadline,
   authorImage,
@@ -49,17 +50,36 @@ const Post = ({
   postImage,
   reactionsCount,
   commentsCount,
-  repostsCount,
-  comments = []
+  comments = [],
+  isLiked: initialIsLiked = false,
+  visibility = 'public',
+  onLike,
+  onAddComment,
 }) => {
   const [openComments, setOpenComments] = useState(false);
-  const [isLiked, setIsLiked] = useState(false);
+  const [isLiked, setIsLiked] = useState(initialIsLiked);
   const [isFollowing, setIsFollowing] = useState(false);
   const [likesCount, setLikesCount] = useState(reactionsCount);
 
-  const handleLike = () => {
-    setIsLiked(!isLiked);
-    setLikesCount(isLiked ? likesCount - 1 : likesCount + 1);
+  React.useEffect(() => {
+    setIsLiked(initialIsLiked);
+  }, [initialIsLiked]);
+
+  React.useEffect(() => {
+    setLikesCount(reactionsCount);
+  }, [reactionsCount]);
+
+  const handleLike = async () => {
+    const nextLiked = !isLiked;
+    setIsLiked(nextLiked);
+    setLikesCount((prev) => prev + (nextLiked ? 1 : -1));
+
+    try {
+      await onLike?.();
+    } catch (error) {
+      setIsLiked(!nextLiked);
+      setLikesCount((prev) => prev + (nextLiked ? -1 : 1));
+    }
   };
 
   const handleFollow = () => {
@@ -119,7 +139,7 @@ const Post = ({
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', color: '#666' }}>
               <Typography variant="caption" sx={{ fontSize: '12px' }}>
-                {timeAgo} •
+                {timeAgo} • {visibility}
               </Typography>
               <PublicIcon sx={{ fontSize: 14, ml: 0.5 }} />
             </Box>
@@ -205,6 +225,7 @@ const Post = ({
         onClose={() => setOpenComments(false)}
         comments={comments}
         postAuthor={authorName}
+        onAddComment={onAddComment}
       />
 
     </Card>

@@ -2,13 +2,14 @@ import React from 'react'
 import { Box, Typography, Stack , Button} from '@mui/material';
 import Image from 'next/image';
 import Link from 'next/link';
-export default function SingupHeader() {
+export default function SignupHeader() {
 
 const themeColors = {
   primary: "#250047",
   accentCyan: "#00B4D8",
   bgLight: "#f7f5f8",
   textPurple: "#7445a1",
+  textDark: "#140d1b",
   borderLight: "#dccdea"
 };
   return (

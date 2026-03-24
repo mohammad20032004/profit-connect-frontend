@@ -7,7 +7,7 @@ import {
 import {
   School, Work, ChevronRight, ArrowBack, CheckCircle, ArrowForward
 } from '@mui/icons-material';
-import SingupHeader from './SingupHeader';
+import SignupHeader from './SignupHeader';
 // إعداد الألوان والسمات المخصصة
 const themeColors = {
   primary: "#6b10c6",
@@ -17,7 +17,7 @@ const themeColors = {
   borderLight: "#ede6f4",
 };
 
-export default function SingupPageStep2({ onNext, onBack, data }) {
+export default function SignupPageStep2({ onNext, onBack, data }) {
   const [selectedRole, setSelectedRole] = useState(data?.role || 'Student');
 
   const handleNext = () => {
@@ -29,7 +29,7 @@ export default function SingupPageStep2({ onNext, onBack, data }) {
     <Box sx={{ bgcolor: themeColors.bgLight, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       
       {/* 1. Header (Top Navigation) */}
-<SingupHeader />
+<SignupHeader />
       {/* 2. Main Content */}
       <Container maxWidth="md" sx={{ py: 8, flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
         <Paper elevation={0} sx={{ 

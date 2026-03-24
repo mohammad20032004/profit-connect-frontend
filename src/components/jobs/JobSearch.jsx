@@ -1,4 +1,4 @@
-import { Paper, TextField, InputAdornment } from '@mui/material';
+import { Box, Button, Paper, TextField, InputAdornment } from '@mui/material';
 import { Search, LocationOn } from '@mui/icons-material';
 
 const JobSearch = () => (

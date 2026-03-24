@@ -1,98 +1,282 @@
-import React from 'react';
+'use client';
+
+import React, { useEffect, useMemo, useState } from 'react';
+import {
+  Avatar,
+  Box,
+  Button,
+  CircularProgress,
+  Paper,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
+import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
+import PublicOutlinedIcon from '@mui/icons-material/PublicOutlined';
+import { useSelector } from 'react-redux';
 import { Post } from '../posts';
-import { Box } from '@mui/material';
-const postsData = [
-  {
-    authorName: 'Sarah Johnson',
-    authorHeadline: 'Senior Full Stack Developer at Google',
-    authorImage: 'https://i.pravatar.cc/150?img=5',
-    timeAgo: '2h',
-    content: 'Just deployed my first microservices architecture using Docker and Kubernetes! 🚀\n\nKey learnings:\n✅ Container orchestration is a game changer\n✅ Service mesh with Istio simplified communication\n✅ Monitoring with Prometheus saved debugging time\n\nWhat\'s your favorite DevOps tool?',
-    postImage: null,
-    reactionsCount: 342,
-    commentsCount: 28,
-    repostsCount: 15,
-    comments: []
-  },
-  {
-    authorName: 'Ahmed Hassan',
-    authorHeadline: 'React Developer | JavaScript Enthusiast',
-    authorImage: 'https://i.pravatar.cc/150?img=12',
-    timeAgo: '4h',
-    content: 'React 19 is officially here! 🎉\n\nMy favorite new features:\n1. Server Components by default\n2. Improved use() hook\n3. Better error handling\n4. Automatic batching improvements\n\nTime to upgrade your projects!',
-    postImage: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800',
-    reactionsCount: 521,
-    commentsCount: 67,
-    repostsCount: 89,
-    comments: []
-  },
-  {
-    authorName: 'Emily Chen',
-    authorHeadline: 'AI/ML Engineer | Python Developer',
-    authorImage: 'https://i.pravatar.cc/150?img=9',
-    timeAgo: '6h',
-    content: 'Built a real-time sentiment analysis tool using Python and TensorFlow! 🤖\n\nStack:\n- FastAPI for backend\n- TensorFlow for ML model\n- React for frontend\n- Redis for caching\n\nProcessing 10k requests/sec with 95% accuracy. Open source soon!',
-    postImage: null,
-    reactionsCount: 789,
-    commentsCount: 94,
-    repostsCount: 156,
-    comments: []
-  },
-  {
-    authorName: 'Marcus Williams',
-    authorHeadline: 'Backend Engineer at Microsoft | Node.js Expert',
-    authorImage: 'https://i.pravatar.cc/150?img=14',
-    timeAgo: '8h',
-    content: 'Performance optimization tips for Node.js applications:\n\n1️⃣ Use clustering for multi-core systems\n2️⃣ Implement caching strategies (Redis/Memcached)\n3️⃣ Optimize database queries with indexing\n4️⃣ Use async/await properly\n5️⃣ Monitor with APM tools\n\nReduced API response time from 800ms to 120ms! 📊',
-    postImage: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800',
-    reactionsCount: 1243,
-    commentsCount: 156,
-    repostsCount: 234,
-    comments: []
-  },
-  {
-    authorName: 'Fatima Al-Rashid',
-    authorHeadline: 'Mobile Developer | Flutter & React Native',
-    authorImage: 'https://i.pravatar.cc/150?img=20',
-    timeAgo: '10h',
-    content: 'Flutter vs React Native in 2024? 🤔\n\nAfter building apps with both:\n\nFlutter wins for:\n✅ Performance\n✅ UI consistency\n✅ Hot reload speed\n\nReact Native wins for:\n✅ JavaScript ecosystem\n✅ Easier for web devs\n✅ Larger community\n\nBoth are excellent choices! Choose based on your team\'s expertise.',
-    postImage: null,
-    reactionsCount: 456,
-    commentsCount: 89,
-    repostsCount: 67,
-    comments: []
-  },
-  {
-    authorName: 'David Park',
-    authorHeadline: 'DevOps Engineer | Cloud Architecture Specialist',
-    authorImage: 'https://i.pravatar.cc/150?img=33',
-    timeAgo: '12h',
-    content: 'Migrated our entire infrastructure to AWS! ☁️\n\nCost savings: 40%\nPerformance improvement: 3x faster\nDeployment time: From hours to minutes\n\nKey services used:\n- ECS for containers\n- RDS for databases\n- CloudFront for CDN\n- Lambda for serverless functions\n\nCloud migration is worth it!',
-    postImage: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800',
-    reactionsCount: 892,
-    commentsCount: 123,
-    repostsCount: 178,
-    comments: []
-  },
-  {
-    authorName: 'Lisa Anderson',
-    authorHeadline: 'Frontend Developer | CSS Wizard',
-    authorImage: 'https://i.pravatar.cc/150?img=47',
-    timeAgo: '1d',
-    content: 'CSS Grid vs Flexbox - When to use what? 🎨\n\nUse Grid for:\n📐 2D layouts (rows AND columns)\n📐 Complex page structures\n📐 Overlapping elements\n\nUse Flexbox for:\n📏 1D layouts (row OR column)\n📏 Navigation bars\n📏 Centering items\n\nMaster both for ultimate layout control!',
-    postImage: null,
-    reactionsCount: 634,
-    commentsCount: 78,
-    repostsCount: 92,
-    comments: []
-  }
-];
+import { addComment, createPost, getPosts, toggleLike } from '@/services/postService';
+
+const getAuthorName = (user) => {
+  const profile = user?.profile;
+  return (
+    profile?.fullname ||
+    [profile?.firstName, profile?.lastName].filter(Boolean).join(' ') ||
+    user?.username ||
+    'Unknown User'
+  );
+};
+
+const getAuthorHeadline = (user) => user?.profile?.headline || user?.role || 'Professional Member';
+
+const getAuthorImage = (user) => {
+  const avatar = user?.profile?.avatar;
+  return avatar ? `/Images/${avatar}` : undefined;
+};
+
+const formatRelativeTime = (dateString) => {
+  if (!dateString) return 'now';
+
+  const now = new Date();
+  const date = new Date(dateString);
+  const diffInSeconds = Math.max(1, Math.floor((now - date) / 1000));
+
+  if (diffInSeconds < 60) return 'now';
+  if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m`;
+  if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h`;
+  return `${Math.floor(diffInSeconds / 86400)}d`;
+};
+
+const mapPost = (post, currentUserId) => ({
+  id: post?._id,
+  authorName: getAuthorName(post?.user),
+  authorHeadline: getAuthorHeadline(post?.user),
+  authorImage: getAuthorImage(post?.user),
+  timeAgo: formatRelativeTime(post?.createdAt),
+  content: post?.content || '',
+  postImage: post?.image || null,
+  reactionsCount: post?.likes?.length || 0,
+  commentsCount: post?.comments?.length || 0,
+  visibility: post?.visibility || 'public',
+  isLiked: Boolean(currentUserId && post?.likes?.includes(currentUserId)),
+  comments: (post?.comments || []).map((comment) => ({
+    id: comment?._id,
+    user: getAuthorName(comment?.user),
+    text_comment: comment?.content,
+    userImage: getAuthorImage(comment?.user),
+    timeAgo: formatRelativeTime(comment?.createdAt),
+  })),
+});
+
+function CreatePostComposer({ onCreate, loading }) {
+  const user = useSelector((state) => state.user.user);
+  const profile = useSelector((state) => state.user.profile);
+  const [content, setContent] = useState('');
+  const [image, setImage] = useState('');
+  const [visibility, setVisibility] = useState('public');
+
+  const avatarSrc = profile?.avatar ? `/Images/${profile.avatar}` : undefined;
+  const canSubmit = content.trim().length > 0 && !loading;
+
+  const handleSubmit = async () => {
+    if (!canSubmit) return;
+
+    await onCreate({
+      content: content.trim(),
+      image: image.trim() || null,
+      visibility,
+    });
+
+    setContent('');
+    setImage('');
+    setVisibility('public');
+  };
+
+  return (
+    <Paper
+      elevation={0}
+      sx={{
+        p: 2.5,
+        mb: 2.5,
+        borderRadius: 3,
+        border: '1px solid #e5e7eb',
+        bgcolor: '#fff',
+      }}
+    >
+      <Stack direction="row" spacing={1.5} alignItems="flex-start">
+        <Avatar src={avatarSrc}>{user?.username?.charAt(0)?.toUpperCase()}</Avatar>
+        <Box sx={{ flex: 1 }}>
+          <TextField
+            fullWidth
+            multiline
+            minRows={3}
+            placeholder="Start a post..."
+            value={content}
+            onChange={(event) => setContent(event.target.value)}
+            sx={{ '& .MuiOutlinedInput-root': { borderRadius: 3, bgcolor: '#fbfcfe' } }}
+          />
+
+          <Stack direction={{ xs: 'column', md: 'row' }} spacing={1.5} sx={{ mt: 1.5 }}>
+            <TextField
+              fullWidth
+              placeholder="Optional image URL"
+              value={image}
+              onChange={(event) => setImage(event.target.value)}
+              InputProps={{
+                startAdornment: <AddPhotoAlternateOutlinedIcon sx={{ color: '#6b7280', mr: 1 }} />,
+              }}
+            />
+
+            <TextField
+              select
+              value={visibility}
+              onChange={(event) => setVisibility(event.target.value)}
+              SelectProps={{ native: true }}
+              sx={{ minWidth: { xs: '100%', md: 160 } }}
+              InputProps={{
+                startAdornment: <PublicOutlinedIcon sx={{ color: '#6b7280', mr: 1 }} />,
+              }}
+            >
+              <option value="public">public</option>
+              <option value="private">private</option>
+              <option value="connections">connections</option>
+            </TextField>
+          </Stack>
+
+          <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mt: 1.5 }}>
+            <Typography sx={{ color: '#6b7280', fontSize: '0.92rem' }}>
+              Share your update with your network.
+            </Typography>
+            <Button
+              variant="contained"
+              onClick={handleSubmit}
+              disabled={!canSubmit}
+              sx={{
+                textTransform: 'none',
+                borderRadius: 999,
+                px: 3,
+                bgcolor: '#240046',
+                '&:hover': { bgcolor: '#3c096c' },
+              }}
+            >
+              {loading ? 'Posting...' : 'Post'}
+            </Button>
+          </Stack>
+        </Box>
+      </Stack>
+    </Paper>
+  );
+}
 
 export default function MainSection() {
+  const token = useSelector((state) => state.user.token);
+  const currentUser = useSelector((state) => state.user.user);
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [creatingPost, setCreatingPost] = useState(false);
+  const [error, setError] = useState('');
+
+  const currentUserId = currentUser?.id || currentUser?._id;
+
+  const mappedPosts = useMemo(
+    () => posts.map((post) => mapPost(post, currentUserId)),
+    [posts, currentUserId]
+  );
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      if (!token) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setError('');
+        const response = await getPosts({ token, page: 1, limit: 10 });
+        setPosts(response?.data || []);
+      } catch (fetchError) {
+        setError(fetchError.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, [token]);
+
+  const handleCreatePost = async (postData) => {
+    if (!token) return;
+
+    try {
+      setCreatingPost(true);
+      const response = await createPost({ token, postData });
+      setPosts((prev) => [response.data, ...prev]);
+    } catch (createError) {
+      alert(createError.message);
+    } finally {
+      setCreatingPost(false);
+    }
+  };
+
+  const handleToggleLike = async (postId) => {
+    if (!token) return;
+
+    try {
+      const response = await toggleLike({ token, postId });
+      setPosts((prev) =>
+        prev.map((post) =>
+          post._id === postId
+            ? {
+                ...post,
+                likes: response.isLiked
+                  ? [...(post.likes || []), currentUserId].filter(Boolean)
+                  : (post.likes || []).filter((likeId) => likeId !== currentUserId),
+              }
+            : post
+        )
+      );
+    } catch (likeError) {
+      alert(likeError.message);
+    }
+  };
+
+  const handleAddComment = async (postId, content) => {
+    if (!token) return;
+
+    try {
+      await addComment({ token, postId, content });
+      const response = await getPosts({ token, page: 1, limit: 10 });
+      setPosts(response?.data || []);
+    } catch (commentError) {
+      alert(commentError.message);
+    }
+  };
+
+  if (loading) {
+    return (
+      <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', py: 6 }}>
+        <CircularProgress sx={{ color: '#240046' }} />
+      </Box>
+    );
+  }
+
   return (
-    <Box sx={{width: '100%', m: '0 auto', p: 2}}>
-      {postsData.map((post, index) => (
-        <Post key={index} {...post}/>
+    <Box sx={{ width: '100%', m: '0 auto', p: 2 }}>
+      <CreatePostComposer onCreate={handleCreatePost} loading={creatingPost} />
+
+      {error ? (
+        <Paper elevation={0} sx={{ p: 2.5, mb: 2, borderRadius: 3, border: '1px solid #fecaca', bgcolor: '#fff1f2' }}>
+          <Typography sx={{ color: '#b42318', fontWeight: 700 }}>{error}</Typography>
+        </Paper>
+      ) : null}
+
+      {mappedPosts.map((post) => (
+        <Post
+          key={post.id}
+          {...post}
+          onLike={() => handleToggleLike(post.id)}
+          onAddComment={(content) => handleAddComment(post.id, content)}
+        />
       ))}
     </Box>
   );
