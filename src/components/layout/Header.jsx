@@ -116,7 +116,7 @@ const Header = () => {
   );
 
   const subLabel = user?.email || user?.role || 'View profile';
-  const avatarSrc = profile?.avatar ? `/Images/${profile.avatar}` : undefined;
+  const avatarSrc = profile?.avatar || undefined;
 
   const isJobRoute = jobRoutes.some((route) => pathname.startsWith(route));
   const shouldHideHeader = hiddenRoutes.some((route) => pathname.startsWith(route));

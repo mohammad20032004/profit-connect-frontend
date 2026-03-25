@@ -146,7 +146,7 @@ export default function Companies() {
   const remainingCompanyCards = companyCards.slice(3);
 
   return (
-    <Box sx={{ bgcolor: '#f7f5f8', minHeight: '100vh', pb: 8 }}>
+    <Box sx={{ bgcolor: '#f7f5f8', minHeight: '100vh', pb: 8,width: '100%' }}>
       <Container maxWidth="xl">
         <CompanySearch value={searchTerm} onChange={setSearchTerm} />
 
@@ -179,7 +179,7 @@ export default function Companies() {
                 />
 
                 {visibleCompanies.length === 0 ? (
-                  <Box sx={{ p: 4, bgcolor: 'white', borderRadius: 3, border: '1px solid #ede6f4' }}>
+                  <Box sx={{ p: 2, bgcolor: 'white', borderRadius: 3, border: '1px solid #ede6f4' }}>
                     <Typography sx={{ fontWeight: 700, color: '#250047' }}>
                       No companies found
                     </Typography>
@@ -190,7 +190,7 @@ export default function Companies() {
                 ) : (
                   <>
                     {!!highlightedCompanyCards.length && (
-                      <Grid container spacing={3} sx={{ mb: remainingCompanyCards.length ? 1 : 0 }}>
+                      <Grid container spacing={3} sx={{ mb: remainingCompanyCards.length ? 1 : 0 , justifyContent: 'center' }}>
                         {highlightedCompanyCards.map((company) => (
                           <Grid item xs={12} md={6} lg={4} key={company._id}>
                             <CompanyCard
@@ -204,7 +204,7 @@ export default function Companies() {
                     )}
 
                     {!!remainingCompanyCards.length && (
-                      <Grid container spacing={3} sx={{ mt: 0 }}>
+                      <Grid container spacing={3} sx={{ mt: 0 , justifyContent: 'center' }}>
                         {remainingCompanyCards.map((company) => (
                           <Grid item xs={12} md={6} lg={4} key={company._id}>
                             <CompanyCard
@@ -218,7 +218,7 @@ export default function Companies() {
                     )}
 
                     {!highlightedCompanyCards.length && !remainingCompanyCards.length && (
-                      <Grid container spacing={3}>
+                      <Grid container spacing={3} justifyContent={'center'}>
                         {companyCards.map((company) => (
                           <Grid item xs={12} md={6} lg={4} key={company._id}>
                             <CompanyCard

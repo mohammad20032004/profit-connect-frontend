@@ -2,7 +2,7 @@ import { Card, CardMedia, CardContent, Box, Typography, Avatar, Button, Chip } f
 import VerifiedIcon from '@mui/icons-material/Verified';
 
 const CompanyCard = ({ company, onFollow, isFollowLoading }) => (
-  <Card sx={{ borderRadius: 3, border: '1px solid #ede6f4', '&:hover': { boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }, transition: '0.3s' }}>
+  <Card sx={{width: 350, borderRadius: 3, border: '1px solid #ede6f4', '&:hover': { boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }, transition: '0.3s' }}>
     <CardMedia component="img" height="80" image={company.coverPhoto || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab'} />
     <CardContent sx={{ pt: 0, px: 2.5, pb: 3 }}>
       <Avatar src={company.logo} sx={{ width: 60, height: 60, mt: -4, border: '4px solid white', bgcolor: '#ede6f4', mb: 2 }}>

@@ -48,7 +48,7 @@ export default function ProfileOverview() {
 
   // استخراج الاسم وعرضه
   const fullName = profile?.fullname || [profile?.firstName, profile?.lastName].filter(Boolean).join(' ') || user?.username || 'Amen AL Abed Development';
-  const avatarSrc = profile?.avatar ? `/Images/${profile.avatar}` : undefined;
+  const avatarSrc = profile?.avatar || undefined;
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: theme.bg, py: { xs: 3, md: 5 }, width: '100%' }}>

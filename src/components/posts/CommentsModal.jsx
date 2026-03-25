@@ -23,7 +23,7 @@ const CommentsModal = ({ open, onClose, comments = [], postAuthor, onAddComment 
   const [newComment, setNewComment] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const avatarSrc = profile?.avatar ? `/Images/${profile.avatar}` : undefined;
+  const avatarSrc = profile?.avatar || undefined;
 
   const handleAddComment = async () => {
     if (!newComment.trim()) {

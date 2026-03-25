@@ -31,7 +31,7 @@ const getAuthorHeadline = (user) => user?.profile?.headline || user?.role || 'Pr
 
 const getAuthorImage = (user) => {
   const avatar = user?.profile?.avatar;
-  return avatar ? `/Images/${avatar}` : undefined;
+  return avatar || undefined;
 };
 
 const formatRelativeTime = (dateString) => {
@@ -75,7 +75,7 @@ function CreatePostComposer({ onCreate, loading }) {
   const [image, setImage] = useState('');
   const [visibility, setVisibility] = useState('public');
 
-  const avatarSrc = profile?.avatar ? `/Images/${profile.avatar}` : undefined;
+  const avatarSrc = profile?.avatar || undefined;
   const canSubmit = content.trim().length > 0 && !loading;
 
   const handleSubmit = async () => {

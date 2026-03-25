@@ -9,6 +9,7 @@ export {
   updateCompanyStatus,
 } from './companyService';
 export { getCurrentUser, login, signUp } from './authService';
+export { uploadAvatar } from './profileService';
 export {
   applyToJob,
   createJob,
