@@ -8,11 +8,9 @@ import {
   CardActions,
   Avatar,
   Typography,
-  IconButton,
   Button,
   Box,
   Divider,
-  Stack,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import PublicIcon from '@mui/icons-material/Public';
@@ -26,17 +24,19 @@ import CommentsModal from './CommentsModal';
 const ActionButton = styled(Button)(({ theme }) => ({
   textTransform: 'none',
   color: '#5E5E5E',
-  fontWeight: 600,
-  padding: theme.spacing(1.5),
-  borderRadius: '4px',
+  fontWeight: 700,
+  padding: theme.spacing(1.2, 1.4),
+  borderRadius: '14px',
   flex: 1,
+  border: '1px solid rgba(255,255,255,0.55)',
+  background: 'rgba(255,255,255,0.34)',
   '&:hover': {
-    backgroundColor: 'rgba(0, 0, 0, 0.08)',
-    color: 'rgba(0, 0, 0, 0.9)',
+    backgroundColor: 'rgba(255, 255, 255, 0.58)',
+    color: '#240046',
   },
   '& .MuiSvgIcon-root': {
     marginRight: theme.spacing(1),
-    fontSize: '24px',
+    fontSize: '21px',
   },
 }));
 
@@ -92,14 +92,25 @@ const Post = ({
       data-aos-duration="500"
       sx={{
         maxWidth: '100%',
-        borderRadius: '8px',
-        boxShadow: '0px 0px 0px 1px rgba(0,0,0,0.08)',
-        mb: 2,
-        backgroundColor: '#ffffff',
+        position: 'relative',
+        overflow: 'hidden',
+        borderRadius: 5,
+        border: '1px solid rgba(255,255,255,0.55)',
+        boxShadow: '0 18px 36px rgba(15,23,42,0.08)',
+        mb: 2.2,
+        backgroundColor: 'rgba(255,255,255,0.68)',
+        backdropFilter: 'blur(18px)',
         transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(180deg, rgba(255,255,255,0.34), rgba(255,255,255,0.12))',
+          pointerEvents: 'none',
+        },
         '&:hover': {
-          transform: 'translateY(-4px)',
-          boxShadow: '0 8px 28px rgba(15,23,42,0.12)',
+          transform: 'translateY(-3px)',
+          boxShadow: '0 24px 44px rgba(15,23,42,0.12)',
         },
       }}
     >
@@ -117,39 +128,43 @@ const Post = ({
             size="small"
             onClick={handleFollow}
             sx={{
-              color: isFollowing ? '#666' : '#00B4D8',
+              color: isFollowing ? '#475569' : '#0ea5e9',
               fontWeight: 'bold',
               textTransform: 'none',
-              fontSize: '14px',
-              '&:hover': { bgcolor: isFollowing ? '#f5f5f5' : '#e6f7fa' }
+              fontSize: '13px',
+              borderRadius: 999,
+              px: 1.5,
+              bgcolor: isFollowing ? 'rgba(255,255,255,0.4)' : 'rgba(14,165,233,0.1)',
+              border: '1px solid rgba(255,255,255,0.55)',
+              '&:hover': { bgcolor: isFollowing ? 'rgba(255,255,255,0.58)' : 'rgba(14,165,233,0.16)' }
             }}
           >
             {isFollowing ? '✓ Following' : '+ Follow'}
           </Button>
         }
         title={
-          <Typography variant="subtitle1" component="div" sx={{ fontWeight: 'bold', color: '#191919', lineHeight: 1.2 }}>
-            {authorName}
-          </Typography>
+            <Typography variant="subtitle1" component="div" sx={{ fontWeight: 800, color: '#1e1b4b', lineHeight: 1.2 }}>
+              {authorName}
+            </Typography>
         }
         subheader={
           <Box>
-            <Typography variant="body2" color="text.secondary" sx={{ fontSize: '12px', mb: 0.5 }}>
+            <Typography variant="body2" color="text.secondary" sx={{ fontSize: '12px', mb: 0.5, color: '#64748b' }}>
               {authorHeadline}
             </Typography>
-            <Box sx={{ display: 'flex', alignItems: 'center', color: '#666' }}>
-              <Typography variant="caption" sx={{ fontSize: '12px' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', color: '#64748b' }}>
+              <Typography variant="caption" sx={{ fontSize: '12px', fontWeight: 600 }}>
                 {timeAgo} • {visibility}
               </Typography>
               <PublicIcon sx={{ fontSize: 14, ml: 0.5 }} />
             </Box>
           </Box>
         }
-        sx={{ pb: 1 }}
+        sx={{ position: 'relative', zIndex: 1, pb: 1, px: 0.5, pt: 1 }}
       />
 
-      <CardContent sx={{ pt: 0, pb: 1 }}>
-        <Typography variant="body1" color="text.primary" sx={{ fontSize: '14px', whiteSpace: 'pre-line' }}>
+      <CardContent sx={{ position: 'relative', zIndex: 1, pt: 0, pb: 1 }}>
+        <Typography variant="body1" color="text.primary" sx={{ fontSize: '0.95rem', lineHeight: 1.75, color: '#334155', whiteSpace: 'pre-line' }}>
           {content}
         </Typography>
       </CardContent>
@@ -164,6 +179,8 @@ const Post = ({
             height: 'auto',
             display: 'block',
             mt: 1,
+            borderTop: '1px solid rgba(255,255,255,0.38)',
+            borderBottom: '1px solid rgba(255,255,255,0.38)',
             maxHeight: '500px',
             objectFit: 'cover',
             transition: 'transform 0.2s ease',
@@ -174,7 +191,7 @@ const Post = ({
         />
       )}
 
-      <Box sx={{ px: 2, py: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <Box sx={{ position: 'relative', zIndex: 1, px: 2, py: 1.2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Box sx={{ position: 'relative', width: 42, height: 16 }}>
             <Box sx={{
@@ -190,21 +207,21 @@ const Post = ({
               <FavoriteIcon sx={{ fontSize: 10, color: '#fff' }} />
             </Box>
           </Box>
-          <Typography variant="caption" color="text.secondary" sx={{ ml: 0.5, fontSize: '12px', '&:hover': { color: '#004182', textDecoration: 'underline', cursor: 'pointer' } }}>
+          <Typography variant="caption" color="text.secondary" sx={{ ml: 0.5, fontSize: '12px', color: '#64748b', '&:hover': { color: '#5b21b6', textDecoration: 'underline', cursor: 'pointer' } }}>
             {likesCount} reactions
           </Typography>
         </Box>
 
         <Box>
-          <Typography variant="caption" color="text.secondary" sx={{ fontSize: '12px', '&:hover': { color: '#004182', textDecoration: 'underline', cursor: 'pointer' } }}>
+          <Typography variant="caption" color="text.secondary" sx={{ fontSize: '12px', color: '#64748b', '&:hover': { color: '#5b21b6', textDecoration: 'underline', cursor: 'pointer' } }}>
             {commentsCount} comments
           </Typography>
         </Box>
       </Box>
 
-      <Divider sx={{ mx: 2 }} />
+      <Divider sx={{ mx: 2, borderColor: 'rgba(148,163,184,0.14)' }} />
 
-      <CardActions sx={{ px: 1, py: 0.5, justifyContent: 'space-between' }}>
+      <CardActions sx={{ position: 'relative', zIndex: 1, px: 1.25, py: 1.1, justifyContent: 'space-between', gap: 1 }}>
         <ActionButton 
           startIcon={isLiked ? <ThumbUpIcon /> : <ThumbUpOffAltIcon />}
           onClick={handleLike}
