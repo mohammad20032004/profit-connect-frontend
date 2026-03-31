@@ -39,13 +39,16 @@ const JobCard = ({ job }) => {
       sx={{
         p: 3,
         mb: 2,
-        borderRadius: 3,
-        border: '1px solid #f0f0f0',
-        backgroundColor: '#ffffff',
+        borderRadius: 4,
+        border: '1px solid rgba(255,255,255,0.58)',
+        backgroundColor: 'rgba(255,255,255,0.66)',
+        backdropFilter: 'blur(16px)',
+        boxShadow: '0 18px 34px rgba(15,23,42,0.06)',
         transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+        overflow: 'hidden',
         '&:hover': {
           transform: 'translateY(-4px)',
-          boxShadow: '0 8px 28px rgba(15,23,42,0.12)',
+          boxShadow: '0 22px 38px rgba(15,23,42,0.1)',
         },
         '&:active': {
           transform: 'scale(0.99)',

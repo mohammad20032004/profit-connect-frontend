@@ -14,9 +14,20 @@ const workPlaceOptions = ['On-site', 'Remote', 'Hybrid'];
 const workLevelOptions = ['Entry', 'Mid', 'Senior', 'Director', 'VP'];
 
 const JobSidebar = ({ filters, onFilterChange, onClear }) => (
-  <Box sx={{ p: 3, bgcolor: 'white', borderRadius: 3, border: '1px solid #e6f2f4' }}>
+  <Box
+    sx={{
+      p: 3,
+      position: { lg: 'sticky' },
+      top: 76,
+      bgcolor: 'rgba(255,255,255,0.62)',
+      backdropFilter: 'blur(18px)',
+      borderRadius: 4,
+      border: '1px solid rgba(255,255,255,0.55)',
+      boxShadow: '0 18px 34px rgba(15,23,42,0.06)',
+    }}
+  >
     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-      <Typography sx={{ fontWeight: 700 }}>Filter By</Typography>
+      <Typography sx={{ fontWeight: 800, color: '#0f172a' }}>Filter By</Typography>
       <Button
         onClick={onClear}
         size="small"
