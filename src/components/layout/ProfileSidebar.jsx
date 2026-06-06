@@ -43,12 +43,12 @@ const MiniProfile = () => {
         if (!file) return;
 
         if (!token) {
-            setFeedback({ type: 'error', message: 'يجب تسجيل الدخول أولاً.' });
+            setFeedback({ type: 'error', message: 'You must be logged in first.' });
             return;
         }
 
         if (!file.type.startsWith('image/')) {
-            setFeedback({ type: 'error', message: 'الملف المختار يجب أن يكون صورة.' });
+            setFeedback({ type: 'error', message: 'The selected file must be an image.' });
             return;
         }
 
@@ -77,9 +77,9 @@ const MiniProfile = () => {
                 }
             }
 
-            setFeedback({ type: 'success', message: 'تم تحديث الصورة الشخصية بنجاح.' });
+            setFeedback({ type: 'success', message: 'Profile photo updated successfully.' });
         } catch (error) {
-            setFeedback({ type: 'error', message: error.message || 'فشل رفع الصورة الشخصية.' });
+            setFeedback({ type: 'error', message: error.message || 'Failed to upload profile photo.' });
         } finally {
             setUploading(false);
         }
@@ -89,32 +89,15 @@ const MiniProfile = () => {
         <Paper elevation={0} sx={{
             position: 'relative',
             overflow: 'hidden',
-            borderRadius: 5,
-            border: '1px solid rgba(255,255,255,0.52)',
-            bgcolor: 'rgba(255,255,255,0.72)',
-            backdropFilter: 'blur(18px)',
-            boxShadow: '0 22px 42px rgba(15,23,42,0.08)',
-            width: '100%',
-            '&::before': {
-                content: '""',
-                position: 'absolute',
-                inset: 0,
-                background: 'linear-gradient(180deg, rgba(255,255,255,0.48) 0%, rgba(255,255,255,0.16) 100%)',
-                pointerEvents: 'none'
-            }
+            borderRadius: 4,
+            bgcolor: 'transparent',
+            width: '100%'
         }}>
             <Box sx={{
                 position: 'relative',
                 zIndex: 1,
-                height: 94,
-                background: 'linear-gradient(135deg, #240046 0%, #5a189a 58%, #38bdf8 100%)',
-                '&::after': {
-                    content: '""',
-                    position: 'absolute',
-                    inset: 0,
-                    background: 'radial-gradient(circle at top right, rgba(255,255,255,0.35), transparent 28%)',
-                    pointerEvents: 'none'
-                }
+                height: 65,
+                
             }}>
                 <Box sx={{
                     position: 'absolute',
@@ -135,27 +118,9 @@ const MiniProfile = () => {
                         }}
                         src={avatarSrc}
                     />
-                    <IconButton 
-                        disabled={uploading}
-                        onClick={handleOpenFilePicker}
-                        aria-label="Change profile photo"
-                        sx={{ 
-                            width: 30, 
-                            height: 30, 
-                            bgcolor: '#ffffff', 
-                            color: '#5b21b6',
-                            position: 'absolute', 
-                            bottom: 2, 
-                            right: -2,
-                            zIndex: 2,
-                            border: '1px solid rgba(255,255,255,0.9)',
-                            boxShadow: '0 8px 18px rgba(15,23,42,0.12)',
-                            '&:hover': { bgcolor: '#f8f4ff' }
-                        }}
-                    >
-                        <EditIcon sx={{ fontSize: 15 }} />
-                    </IconButton>
+                    
                 </Box>
+               
             </Box>
 
             <input
@@ -167,10 +132,10 @@ const MiniProfile = () => {
             />
 
             <Box sx={{ position: 'relative', zIndex: 1, pt: 6.5, pb: 2.5, px: 2.25, textAlign: 'center' }}>
-                <Typography variant="h6" sx={{ fontWeight: 800, fontSize: '1.05rem', mb: 0.5, color: '#240046' }}>
+                <Typography variant="h6" sx={{ fontWeight: 800, fontSize: '1.05rem', mb: 0.5, color: 'primary.dark' }}>
                     {fullName}
                 </Typography>
-                <Typography variant="body2" sx={{ color: '#64748b', fontSize: '0.88rem', mb: 2 }}>
+                <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: '0.88rem', mb: 2 }}>
                     {headline}
                 </Typography>
 
@@ -182,30 +147,23 @@ const MiniProfile = () => {
 
                 <Stack direction="row" spacing={1} justifyContent="center" flexWrap="wrap" useFlexGap>
                     <Chip
-                        icon={Rscore >= 4000 ? <Image src="/Images/High-Score.gif" width={18} height={18} alt="Score" /> : <WorkspacePremiumRoundedIcon sx={{ color: '#5b21b6 !important' }} />}
+                        icon={Rscore >= 4000 ? <Image src="/Images/High-Score.gif" width={18} height={18} alt="Score" /> : <WorkspacePremiumRoundedIcon sx={{ color: 'primary.light' }} />}
                         label={`R-Score: ${Rscore}`}
                         sx={{
-                            bgcolor: 'rgba(255,255,255,0.58)',
-                            color: '#240046',
+                            bgcolor: 'background.paper',
+                            color: 'primary.dark',
                             fontWeight: 800,
                             height: 34,
-                            border: '1px solid rgba(255,255,255,0.7)',
-                            boxShadow: '0 10px 22px rgba(91,33,182,0.08)'
+                            border: 1,
+                            border: 'none',
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
                         }}
                     />
-                    <Chip
-                        label={uploading ? 'Uploading...' : 'Profile ready'}
-                        sx={{
-                            bgcolor: 'rgba(236,254,255,0.9)',
-                            color: '#0f766e',
-                            fontWeight: 700,
-                            height: 34
-                        }}
-                    />
+                   
                 </Stack>
             </Box>
 
-            <Divider sx={{ borderColor: 'rgba(148,163,184,0.15)' }} />
+            <Divider sx={{ borderColor: 'custom.border' }} />
 
             <Box sx={{ position: 'relative', zIndex: 1, p: 1.25 }}>
                 <Link href="/profile" style={{ textDecoration: 'none', color: 'inherit' }}>
@@ -216,22 +174,22 @@ const MiniProfile = () => {
                         py: 1.2,
                         px: 1.25,
                         borderRadius: 3,
-                        bgcolor: 'rgba(255,255,255,0.46)',
-                        border: '1px solid rgba(255,255,255,0.6)',
+                        bgcolor: 'background.paper',
+                        border: "none",
                         mb: 1,
                         transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-                        '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 12px 24px rgba(15,23,42,0.08)' },
+                        '&:hover': { transform: 'translateY(-2px)', boxShadow: 'custom.shadowLight' },
                     }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.1 }}>
                             <Box sx={{ width: 34, height: 34, borderRadius: 2.5, bgcolor: 'rgba(56,189,248,0.14)', display: 'grid', placeItems: 'center' }}>
-                                <VisibilityIcon sx={{ fontSize: 18, color: '#0284c7' }} />
+                                <VisibilityIcon sx={{ fontSize: 18, color: 'secondary.dark' }} />
                             </Box>
                             <Box>
-                                <Typography variant="body2" sx={{ fontSize: '0.78rem', color: '#64748b' }}>Followers</Typography>
-                                <Typography sx={{ fontWeight: 800, color: '#240046', fontSize: '0.92rem' }}>{followersCount}</Typography>
+                                <Typography variant="body2" sx={{ fontSize: '0.78rem', color: 'text.secondary' }}>Followers</Typography>
+                                <Typography sx={{ fontWeight: 800, color: 'primary.dark', fontSize: '0.92rem' }}>{followersCount}</Typography>
                             </Box>
                         </Box>
-                        <Typography sx={{ color: '#0ea5e9', fontSize: '0.8rem', fontWeight: 700 }}>View</Typography>
+                        <Typography sx={{ color: 'secondary.main', fontSize: '0.8rem', fontWeight: 700 }}>View</Typography>
                     </Box>
                 </Link>
 
@@ -242,26 +200,26 @@ const MiniProfile = () => {
                     py: 1.2,
                     px: 1.25,
                     borderRadius: 3,
-                    bgcolor: 'rgba(255,255,255,0.46)',
-                    border: '1px solid rgba(255,255,255,0.6)',
+                   bgcolor: 'background.paper',
+                        border: "none",
                     mb: 1,
                     transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-                    '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 12px 24px rgba(15,23,42,0.08)' },
+                    '&:hover': { transform: 'translateY(-2px)', boxShadow: 'custom.shadowLight' },
                 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.1 }}>
                         <Box sx={{ width: 34, height: 34, borderRadius: 2.5, bgcolor: 'rgba(16,185,129,0.14)', display: 'grid', placeItems: 'center' }}>
-                            <TrendingUpIcon sx={{ fontSize: 18, color: '#059669' }} />
+                            <TrendingUpIcon sx={{ fontSize: 18, color: 'success.dark' }} />
                         </Box>
                         <Box>
-                            <Typography variant="body2" sx={{ fontSize: '0.78rem', color: '#64748b' }}>Following</Typography>
-                            <Typography sx={{ fontWeight: 800, color: '#240046', fontSize: '0.92rem' }}>{followingCount}</Typography>
+                            <Typography variant="body2" sx={{ fontSize: '0.78rem', color: 'text.secondary' }}>Following</Typography>
+                            <Typography sx={{ fontWeight: 800, color: 'primary.dark', fontSize: '0.92rem' }}>{followingCount}</Typography>
                         </Box>
                     </Box>
-                    <Typography sx={{ color: '#10b981', fontSize: '0.8rem', fontWeight: 700 }}>Active</Typography>
+                    <Typography sx={{ color: 'success.main', fontSize: '0.8rem', fontWeight: 700 }}>Active</Typography>
                 </Box>
             </Box>
 
-            <Divider sx={{ borderColor: 'rgba(148,163,184,0.15)' }} />
+            <Divider sx={{ borderColor: 'custom.border' }} />
 
             <Box sx={{
                 position: 'relative',
@@ -275,18 +233,18 @@ const MiniProfile = () => {
                     gap: 1.1,
                     p: 1.25,
                     borderRadius: 3,
-                    bgcolor: 'rgba(255,255,255,0.46)',
-                    border: '1px solid rgba(255,255,255,0.6)',
+                    bgcolor: 'background.paper',
+                        border: "none",
                     cursor: 'pointer',
                     transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-                    '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 12px 24px rgba(15,23,42,0.08)' }
+                    '&:hover': { transform: 'translateY(-2px)', boxShadow: 'custom.shadowLight' }
                 }}>
                     <Box sx={{ width: 34, height: 34, borderRadius: 2.5, bgcolor: 'rgba(91,33,182,0.12)', display: 'grid', placeItems: 'center' }}>
-                        <BookmarkBorderIcon sx={{ fontSize: 18, color: '#6d28d9' }} />
+                        <BookmarkBorderIcon sx={{ fontSize: 18, color: 'primary.main' }} />
                     </Box>
                     <Box>
-                        <Typography variant="body2" sx={{ fontSize: '0.88rem', fontWeight: 700, color: '#240046' }}>My items</Typography>
-                        <Typography sx={{ fontSize: '0.76rem', color: '#64748b' }}>Saved resources and quick access</Typography>
+                        <Typography variant="body2" sx={{ fontSize: '0.88rem', fontWeight: 700, color: 'primary.dark' }}>My items</Typography>
+                        <Typography sx={{ fontSize: '0.76rem', color: 'text.secondary' }}>Saved resources and quick access</Typography>
                     </Box>
                 </Box>
             </Box>

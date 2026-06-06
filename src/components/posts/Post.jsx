@@ -149,9 +149,7 @@ const Post = ({
         }
         subheader={
           <Box>
-            <Typography variant="body2" color="text.secondary" sx={{ fontSize: '12px', mb: 0.5, color: '#64748b' }}>
-              {authorHeadline}
-            </Typography>
+            
             <Box sx={{ display: 'flex', alignItems: 'center', color: '#64748b' }}>
               <Typography variant="caption" sx={{ fontSize: '12px', fontWeight: 600 }}>
                 {timeAgo} • {visibility}
@@ -160,7 +158,7 @@ const Post = ({
             </Box>
           </Box>
         }
-        sx={{ position: 'relative', zIndex: 1, pb: 1, px: 0.5, pt: 1 }}
+        sx={{ position: 'relative', zIndex: 1, pb: 1, px: 1.5, pt: 1.5 }}
       />
 
       <CardContent sx={{ position: 'relative', zIndex: 1, pt: 0, pb: 1 }}>

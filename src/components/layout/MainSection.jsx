@@ -105,7 +105,11 @@ function CreatePostComposer({ onCreate, loading }) {
         overflow: 'hidden',
         p: { xs: 2, md: 2.5 },
         mb: 3,
-       
+        borderRadius: 4,
+        border: 1,
+        borderColor: 'custom.border',
+        bgcolor: 'background.paper',
+        boxShadow: 'custom.shadowLight',
       }}
     >
       <Box sx={{ position: 'relative', zIndex: 1 }}>
@@ -120,8 +124,8 @@ function CreatePostComposer({ onCreate, loading }) {
               width: 52,
               height: 52,
               alignSelf: { xs: 'flex-start', sm: 'auto' },
-              border: '2px solid rgba(255,255,255,0.8)',
-              boxShadow: '0 10px 30px rgba(36,0,70,0.18)',
+              border: '2px solid',
+              borderColor: 'custom.border',
             }}
           >
             {user?.username?.charAt(0)?.toUpperCase()}
@@ -135,7 +139,7 @@ function CreatePostComposer({ onCreate, loading }) {
             >
               <Box>
                 <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 0.5 }}>
-                  <Typography sx={{ fontSize: '1rem', fontWeight: 800, color: '#240046' }}>
+                  <Typography sx={{ fontSize: '1rem', fontWeight: 800, color: 'primary.dark' }}>
                     Create a post
                   </Typography>
                   <Box
@@ -146,16 +150,17 @@ function CreatePostComposer({ onCreate, loading }) {
                       px: 1,
                       py: 0.45,
                       borderRadius: 999,
-                      bgcolor: 'rgba(255,255,255,0.62)',
-                      border: '1px solid rgba(255,255,255,0.7)',
-                      color: '#5b21b6',
+                      bgcolor: 'background.default',
+                      border: 1,
+                      borderColor: 'custom.border',
+                      color: 'primary.light',
                     }}
                   >
                     <AutoAwesomeRoundedIcon sx={{ fontSize: 14 }} />
                     <Typography sx={{ fontSize: '0.72rem', fontWeight: 700 }}>Fresh update</Typography>
                   </Box>
                 </Stack>
-                <Typography sx={{ color: 'rgba(49,46,129,0.72)', fontSize: '0.9rem' }}>
+                <Typography sx={{ color: 'text.secondary', fontSize: '0.9rem' }}>
                   Share a quick win, idea, or announcement with your network.
                 </Typography>
               </Box>
@@ -166,12 +171,13 @@ function CreatePostComposer({ onCreate, loading }) {
                   px: 1.25,
                   py: 0.75,
                   borderRadius: 3,
-                  bgcolor: 'rgba(255,255,255,0.45)',
-                  border: '1px solid rgba(255,255,255,0.6)',
+                  bgcolor: 'background.default',
+                  border: 1,
+                  borderColor: 'custom.border',
                 }}
               >
-                <Typography sx={{ fontSize: '0.72rem', color: '#6b7280', mb: 0.25 }}>Visibility</Typography>
-                <Typography sx={{ fontSize: '0.82rem', fontWeight: 700, color: '#240046' }}>
+                <Typography sx={{ fontSize: '0.72rem', color: 'text.secondary', mb: 0.25 }}>Visibility</Typography>
+                <Typography sx={{ fontSize: '0.82rem', fontWeight: 700, color: 'primary.dark' }}>
                   {visibilityLabel}
                 </Typography>
               </Box>
@@ -186,24 +192,22 @@ function CreatePostComposer({ onCreate, loading }) {
               onChange={(event) => setContent(event.target.value)}
               sx={{
                 '& .MuiOutlinedInput-root': {
-                  borderRadius: 5,
-                  bgcolor: 'rgba(255,255,255,0.55)',
-                  backdropFilter: 'blur(10px)',
+                  borderRadius: 3,
+                  bgcolor: 'background.default',
                   alignItems: 'flex-start',
-                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.7)',
                   '& fieldset': {
-                    borderColor: 'rgba(148,163,184,0.28)',
+                    borderColor: 'custom.border',
                   },
                   '&:hover fieldset': {
-                    borderColor: 'rgba(91,33,182,0.35)',
+                    borderColor: 'primary.light',
                   },
                   '&.Mui-focused fieldset': {
                     borderWidth: '1px',
-                    borderColor: '#7c3aed',
+                    borderColor: 'primary.main',
                   },
                 },
                 '& .MuiInputBase-input::placeholder': {
-                  color: '#64748b',
+                  color: 'text.secondary',
                   opacity: 1,
                 },
               }}
@@ -216,13 +220,15 @@ function CreatePostComposer({ onCreate, loading }) {
                 value={image}
                 onChange={(event) => setImage(event.target.value)}
                 InputProps={{
-                  startAdornment: <AddPhotoAlternateOutlinedIcon sx={{ color: '#6b7280', mr: 1 }} />,
+                  startAdornment: <AddPhotoAlternateOutlinedIcon sx={{ color: 'text.secondary', mr: 1 }} />,
                 }}
                 sx={{
                   '& .MuiOutlinedInput-root': {
-                    borderRadius: 4,
-                    bgcolor: 'rgba(255,255,255,0.48)',
-                    '& fieldset': { borderColor: 'rgba(148,163,184,0.24)' },
+                    borderRadius: 3,
+                    bgcolor: 'background.default',
+                    '& fieldset': { borderColor: 'custom.border' },
+                    '&:hover fieldset': { borderColor: 'primary.light' },
+                    '&.Mui-focused fieldset': { borderColor: 'primary.main' },
                   },
                 }}
               />
@@ -236,40 +242,38 @@ function CreatePostComposer({ onCreate, loading }) {
                   IconComponent: KeyboardArrowDownRoundedIcon,
                 }}
                 InputProps={{
-                  startAdornment: <PublicOutlinedIcon sx={{ color: '#6b7280', mr: 1 }} />,
+                  startAdornment: <PublicOutlinedIcon sx={{ color: 'text.secondary', mr: 1 }} />,
                 }}
                 sx={{
                   minWidth: { xs: '100%', md: 180 },
                   '& .MuiOutlinedInput-root': {
-                    borderRadius: 4,
-                    bgcolor: 'rgba(255,255,255,0.62)',
-                    boxShadow: '0 10px 24px rgba(148,163,184,0.12)',
+                    borderRadius: 3,
+                    bgcolor: 'background.default',
                     pr: 0.5,
                     transition: 'all 0.2s ease',
                     '& fieldset': {
-                      borderColor: 'rgba(148,163,184,0.24)',
+                      borderColor: 'custom.border',
                     },
                     '&:hover': {
-                      bgcolor: 'rgba(255,255,255,0.74)',
-                      boxShadow: '0 12px 28px rgba(91,33,182,0.12)',
+                      bgcolor: 'background.paper',
                     },
                     '&:hover fieldset': {
-                      borderColor: 'rgba(91,33,182,0.3)',
+                      borderColor: 'primary.light',
                     },
                     '&.Mui-focused': {
-                      bgcolor: 'rgba(255,255,255,0.8)',
+                      bgcolor: 'background.paper',
                     },
                     '&.Mui-focused fieldset': {
-                      borderColor: '#7c3aed',
+                      borderColor: 'primary.main',
                     },
                   },
                   '& .MuiInputBase-input': {
                     fontSize: '0.92rem',
                     fontWeight: 700,
-                    color: '#240046',
+                    color: 'primary.dark',
                   },
                   '& .MuiSelect-icon': {
-                    color: '#5b21b6',
+                    color: 'primary.light',
                     fontSize: 24,
                     right: 10,
                     top: 'calc(50% - 12px)',
@@ -283,16 +287,6 @@ function CreatePostComposer({ onCreate, loading }) {
                     WebkitAppearance: 'none',
                     MozAppearance: 'none',
                     cursor: 'pointer',
-                  },
-                  '&::after': {
-                    content: '""',
-                    position: 'absolute',
-                    top: 8,
-                    bottom: 8,
-                    right: 38,
-                    width: '1px',
-                    background: 'linear-gradient(180deg, rgba(91,33,182,0), rgba(91,33,182,0.2), rgba(91,33,182,0))',
-                    pointerEvents: 'none',
                   },
                 }}
               >
@@ -315,15 +309,16 @@ function CreatePostComposer({ onCreate, loading }) {
                     px: 1.1,
                     py: 0.8,
                     borderRadius: 999,
-                    bgcolor: 'rgba(255,255,255,0.5)',
-                    border: '1px solid rgba(255,255,255,0.65)',
+                    bgcolor: 'background.default',
+                    border: 1,
+                    borderColor: 'custom.border',
                   }}
                 >
-                  <Typography sx={{ color: '#475569', fontSize: '0.8rem', fontWeight: 600 }}>
+                  <Typography sx={{ color: 'text.secondary', fontSize: '0.8rem', fontWeight: 600 }}>
                     {contentLength}/280 ready
                   </Typography>
                 </Box>
-                <Typography sx={{ color: '#6b7280', fontSize: '0.9rem' }}>
+                <Typography sx={{ color: 'text.secondary', fontSize: '0.9rem' }}>
                   Keep it clear, concise, and worth stopping for.
                 </Typography>
               </Stack>
@@ -331,21 +326,21 @@ function CreatePostComposer({ onCreate, loading }) {
                 variant="contained"
                 onClick={handleSubmit}
                 disabled={!canSubmit}
+                disableElevation
                 sx={{
                   textTransform: 'none',
                   borderRadius: 999,
                   px: 3.25,
                   py: 1.05,
                   fontWeight: 700,
-                  background: 'linear-gradient(135deg, #240046 0%, #5a189a 100%)',
-                  boxShadow: '0 14px 28px rgba(90,24,154,0.28)',
+                  bgcolor: 'primary.main',
+                  color: 'primary.contrastText',
                   '&:hover': {
-                    background: 'linear-gradient(135deg, #2e0558 0%, #6b21a8 100%)',
-                    boxShadow: '0 16px 30px rgba(90,24,154,0.36)',
+                    bgcolor: 'primary.dark',
                   },
                   '&.Mui-disabled': {
                     color: 'rgba(255,255,255,0.7)',
-                    background: 'rgba(71,85,105,0.35)',
+                    bgcolor: 'action.disabledBackground',
                   },
                 }}
               >
@@ -465,8 +460,6 @@ export default function MainSection() {
           content: '""',
           position: 'absolute',
           inset: 0,
-          background:
-            'radial-gradient(circle at top left, rgba(255,255,255,0.38), transparent 24%), radial-gradient(circle at top right, rgba(91,33,182,0.08), transparent 26%), radial-gradient(circle at bottom center, rgba(56,189,248,0.1), transparent 30%)',
           pointerEvents: 'none',
         },
         '&::after': {
@@ -474,8 +467,6 @@ export default function MainSection() {
           position: 'absolute',
           inset: 12,
           borderRadius: 5,
-          border: '1px solid rgba(255,255,255,0.28)',
-          background: 'linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.04))',
           pointerEvents: 'none',
         },
       }}
