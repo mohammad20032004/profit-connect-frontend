@@ -70,9 +70,21 @@ const CommentsModal = ({ open, onClose, comments = [], postAuthor, onAddComment 
         <Box sx={{ flex: 1, overflowY: 'auto', p: 2 }}>
           {comments.length > 0 ? (
             <Stack spacing={2}>
-              {comments.map((comment, index) => (
-                <Comment key={index} {...comment} />
+{comments.map((comment, index) => (
+                <Comment
+                  key={index}
+                  {...comment}
+                  userId={
+                    comment?.userId ||
+                    comment?.user_id ||
+                    comment?.userid ||
+                    comment?.user?._id ||
+                    comment?.user?.id ||
+                    comment?.id
+                  }
+                />
               ))}
+
             </Stack>
           ) : (
             <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 4 }}>

@@ -13,6 +13,8 @@ import LanguageIcon from '@mui/icons-material/Language';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
 import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { getUserById } from '@/services/userService';
 
 // ألوان هادئة واحترافية (SaaS & LinkedIn Style)
 const theme = {

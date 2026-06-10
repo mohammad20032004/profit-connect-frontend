@@ -28,3 +28,5 @@ export {
 } from './networkService';
 export { getSalaries, getSalaryOptions, getSalaryStats } from './salaryService';
 export { addComment, createPost, getPosts, toggleLike } from './postService';
+export { createConversation, getConversations, getConversationMessages, sendMessage, getUnreadCount } from './messagesService';
+

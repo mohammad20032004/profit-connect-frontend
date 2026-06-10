@@ -15,13 +15,33 @@ import {
 } from '@mui/material';
 import { Edit, Search } from '@mui/icons-material';
 
-export const demoConversations = [
-  { id: 1, name: 'Sarah Jenkins', role: 'Senior Product Designer', avatar: 'https://i.pravatar.cc/150?img=5', message: "I've attached the draft for the dashboard refresh.", time: '10:45 AM', online: true, unread: 2 },
-  { id: 2, name: 'Ahmed Hassan', role: 'React Developer', avatar: 'https://i.pravatar.cc/150?img=12', message: 'Thanks for the feedback. I pushed the new branch.', time: 'Yesterday', online: false, unread: 0 },
-  { id: 3, name: 'Emily Chen', role: 'AI/ML Engineer', avatar: 'https://i.pravatar.cc/150?img=9', message: 'Let me check the model metrics again and get back to you.', time: '2 days ago', online: true, unread: 0 },
-  { id: 4, name: 'Marcus Williams', role: 'Backend Engineer', avatar: 'https://i.pravatar.cc/150?img=14', message: 'Meeting at 3 PM still works on my side.', time: '3 days ago', online: false, unread: 1 },
-  { id: 5, name: 'Lisa Anderson', role: 'Frontend Developer', avatar: 'https://i.pravatar.cc/150?img=47', message: 'CSS Grid is amazing for this layout.', time: '1 week ago', online: true, unread: 0 },
-];
+const normalizeConversation = (conv) => {
+  const name = conv?.name ?? conv?.conversation?.name ?? '';
+  const role = conv?.role ?? conv?.conversation?.role ?? '';
+  const avatar = conv?.avatar ?? conv?.conversation?.avatar ?? undefined;
+  const message = conv?.message ?? conv?.lastMessage?.content ?? '';
+  const time = conv?.time ?? conv?.lastMessage?.time ?? '';
+  const online = conv?.online ?? conv?.conversation?.online ?? false;
+  const unread = conv?.unread ?? conv?.unreadCount ?? 0;
+
+  return {
+    id: conv?.id ?? conv?._id ?? conv?.conversationId ?? conv?.conversation?._id ?? conv?.conversation?.id,
+    name,
+    role,
+    avatar,
+    message,
+    time,
+    online,
+    unread,
+    raw: conv,
+  };
+};
+
+
+// Keep demo export for fallback during development.
+// UI will render real data passed via props.
+export const demoConversations = [];
+
 
 const ConversationList = ({
   conversations = demoConversations,
@@ -30,9 +50,12 @@ const ConversationList = ({
   onSearchChange,
   onSelectConversation,
 }) => {
-  const filteredConversations = conversations.filter((conv) =>
-    conv.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const normalized = (conversations || []).map(normalizeConversation);
+
+  const filteredConversations = normalized.filter((conv) =>
+    (conv.name || '').toLowerCase().includes((searchQuery || '').toLowerCase())
   );
+
 
   return (
     <Box

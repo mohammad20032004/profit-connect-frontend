@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   Card,
   CardHeader,
@@ -18,9 +18,10 @@ import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import SendIcon from '@mui/icons-material/Send';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
-import FavoriteIcon from '@mui/icons-material/Favorite';
 import CommentsModal from './CommentsModal';
+import { useRouter } from 'next/navigation'; // <--- 1. استيراد الموجه من Next.js
 
+// تحسين الـ Styled Component ليكون أكثر مرونة
 const ActionButton = styled(Button)(({ theme }) => ({
   textTransform: 'none',
   color: '#5E5E5E',
@@ -30,6 +31,7 @@ const ActionButton = styled(Button)(({ theme }) => ({
   flex: 1,
   border: '1px solid rgba(255,255,255,0.55)',
   background: 'rgba(255,255,255,0.34)',
+  transition: 'all 0.2s ease',
   '&:hover': {
     backgroundColor: 'rgba(255, 255, 255, 0.58)',
     color: '#240046',
@@ -44,6 +46,7 @@ const Post = ({
   id,
   authorName,
   authorHeadline,
+  authorId,
   authorImage,
   timeAgo,
   content,
@@ -56,35 +59,37 @@ const Post = ({
   onLike,
   onAddComment,
 }) => {
+  const router = useRouter(); // <--- 2. تفعيل الموجه داخل المكون
   const [openComments, setOpenComments] = useState(false);
   const [isLiked, setIsLiked] = useState(initialIsLiked);
   const [isFollowing, setIsFollowing] = useState(false);
   const [likesCount, setLikesCount] = useState(reactionsCount);
 
-  React.useEffect(() => {
-    setIsLiked(initialIsLiked);
-  }, [initialIsLiked]);
+  // دالة مشتركة للذهاب إلى حساب الكاتب عند الضغط على اسمه أو صورته
+  const handleNavigateToProfile = useCallback(() => {
+    if (authorId) {
+      router.push(`/user-profile/${authorId}`); // <--- 3. التوجيه الديناميكي للمسار المطلق
+    }
+  }, [router, authorId]);
 
-  React.useEffect(() => {
-    setLikesCount(reactionsCount);
-  }, [reactionsCount]);
-
-  const handleLike = async () => {
+  const handleLike = useCallback(async () => {
     const nextLiked = !isLiked;
+    
     setIsLiked(nextLiked);
     setLikesCount((prev) => prev + (nextLiked ? 1 : -1));
 
     try {
-      await onLike?.();
+      await onLike?.(id, nextLiked);
     } catch (error) {
       setIsLiked(!nextLiked);
       setLikesCount((prev) => prev + (nextLiked ? -1 : 1));
+      console.error("Failed to update like status:", error);
     }
-  };
+  }, [id, isLiked, onLike]);
 
-  const handleFollow = () => {
-    setIsFollowing(!isFollowing);
-  };
+  const handleFollow = useCallback(() => {
+    setIsFollowing((prev) => !prev);
+  }, []);
 
   return (
     <Card
@@ -114,13 +119,13 @@ const Post = ({
         },
       }}
     >
-
       <CardHeader
         avatar={
           <Avatar
             src={authorImage}
-            sx={{ width: 48, height: 48 }}
+            sx={{ width: 48, height: 48, cursor: 'pointer' }} // <--- إضافة مؤشر pointer لليد
             alt={authorName}
+            onClick={handleNavigateToProfile} // <--- 4. حدث الضغط على الصورة الشخصية
           />
         }
         action={
@@ -133,6 +138,7 @@ const Post = ({
               textTransform: 'none',
               fontSize: '13px',
               borderRadius: 999,
+              m: 2,
               px: 1.5,
               bgcolor: isFollowing ? 'rgba(255,255,255,0.4)' : 'rgba(14,165,233,0.1)',
               border: '1px solid rgba(255,255,255,0.55)',
@@ -143,26 +149,37 @@ const Post = ({
           </Button>
         }
         title={
-            <Typography variant="subtitle1" component="div" sx={{ fontWeight: 800, color: '#1e1b4b', lineHeight: 1.2 }}>
-              {authorName}
-            </Typography>
+          <Typography 
+            variant="subtitle1" 
+            component="div" 
+            onClick={handleNavigateToProfile} // <--- 5. حدث الضغط على اسم المستخدم
+            sx={{ 
+              fontWeight: 800, 
+              color: '#1e1b4b', 
+              lineHeight: 1.2,
+              cursor: 'pointer', // تحويل شكل الماوس ليد عند الوقوف على الاسم
+              '&:hover': {
+                color: '#0ea5e9', // تغيير لون الاسم خفيفاً عند الوقوف عليه لتوحي بالتفاعل
+                textDecoration: 'underline'
+              }
+            }}
+          >
+            {authorName}
+          </Typography>
         }
         subheader={
-          <Box>
-            
-            <Box sx={{ display: 'flex', alignItems: 'center', color: '#64748b' }}>
-              <Typography variant="caption" sx={{ fontSize: '12px', fontWeight: 600 }}>
-                {timeAgo} • {visibility}
-              </Typography>
-              <PublicIcon sx={{ fontSize: 14, ml: 0.5 }} />
-            </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', color: '#64748b', mt: 0.5 }}>
+            <Typography variant="caption" sx={{ fontSize: '12px', fontWeight: 600 }}>
+              {timeAgo} • {visibility}
+            </Typography>
+            <PublicIcon sx={{ fontSize: 14, ml: 0.5 }} />
           </Box>
         }
         sx={{ position: 'relative', zIndex: 1, pb: 1, px: 1.5, pt: 1.5 }}
       />
 
       <CardContent sx={{ position: 'relative', zIndex: 1, pt: 0, pb: 1 }}>
-        <Typography variant="body1" color="text.primary" sx={{ fontSize: '0.95rem', lineHeight: 1.75, color: '#334155', whiteSpace: 'pre-line' }}>
+        <Typography variant="body1" sx={{ fontSize: '0.95rem', lineHeight: 1.75, color: '#334155', whiteSpace: 'pre-line' }}>
           {content}
         </Typography>
       </CardContent>
@@ -189,29 +206,25 @@ const Post = ({
         />
       )}
 
+      {/* قسم العدادات (Reactions & Comments) */}
       <Box sx={{ position: 'relative', zIndex: 1, px: 2, py: 1.2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Box sx={{ position: 'relative', width: 42, height: 16 }}>
-            <Box sx={{
-              position: 'absolute', left: 0, zIndex: 2,
-              bgcolor: '#0a66c2', borderRadius: '50%', p: '2px', display: 'flex'
-            }}>
-              <ThumbUpIcon sx={{ fontSize: 10, color: '#fff' }} />
-            </Box>
-            <Box sx={{
-              position: 'absolute', left: 14, zIndex: 1,
-              bgcolor: '#df704d', borderRadius: '50%', p: '2px', display: 'flex'
-            }}>
-              <FavoriteIcon sx={{ fontSize: 10, color: '#fff' }} />
-            </Box>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Box sx={{ bgcolor: '#0a66c2', borderRadius: '50%', p: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <ThumbUpIcon sx={{ fontSize: 12, color: '#fff' }} />
           </Box>
-          <Typography variant="caption" color="text.secondary" sx={{ ml: 0.5, fontSize: '12px', color: '#64748b', '&:hover': { color: '#5b21b6', textDecoration: 'underline', cursor: 'pointer' } }}>
+          <Typography 
+            variant="caption" 
+            sx={{ fontSize: '12px', color: '#64748b', '&:hover': { color: '#5b21b6', textDecoration: 'underline', cursor: 'pointer' } }}
+          >
             {likesCount} reactions
           </Typography>
         </Box>
 
         <Box>
-          <Typography variant="caption" color="text.secondary" sx={{ fontSize: '12px', color: '#64748b', '&:hover': { color: '#5b21b6', textDecoration: 'underline', cursor: 'pointer' } }}>
+          <Typography 
+            variant="caption" 
+            sx={{ fontSize: '12px', color: '#64748b', '&:hover': { color: '#5b21b6', textDecoration: 'underline', cursor: 'pointer' } }}
+          >
             {commentsCount} comments
           </Typography>
         </Box>
@@ -242,7 +255,6 @@ const Post = ({
         postAuthor={authorName}
         onAddComment={onAddComment}
       />
-
     </Card>
   );
 };

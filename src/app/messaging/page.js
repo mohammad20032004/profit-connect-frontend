@@ -1,15 +1,46 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
+
 import { Box } from '@mui/material';
+
 import { ChatWindow, ConversationList, SidebarNav } from '@/components/messaging';
-import { demoConversations } from '@/components/messaging/ConversationList';
+import { useSelector } from 'react-redux';
+import { getConversations } from '@/services/messagesService';
 
 export default function MessagingPage() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedConversation, setSelectedConversation] = useState(demoConversations[0]);
 
-  const conversations = useMemo(() => demoConversations, []);
+  const { token } = useSelector((state) => state.user);
+  const [conversations, setConversations] = useState([]);
+  const [selectedConversation, setSelectedConversation] = useState(null);
+
+  useEffect(() => {
+    if (!token) return;
+
+    let isMounted = true;
+
+    const load = async () => {
+      try {
+        const res = await getConversations(token);
+        const list = res?.data ?? [];
+        if (!isMounted) return;
+
+        setConversations(list);
+        setSelectedConversation((prev) => prev ?? list?.[0] ?? null);
+      } catch (e) {
+        if (!isMounted) return;
+        setConversations([]);
+        setSelectedConversation(null);
+      }
+    };
+
+    load();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [token]);
 
   return (
     <Box
@@ -24,6 +55,7 @@ export default function MessagingPage() {
     >
       <Box
         sx={{
+
           display: 'flex',
           flex: 1,
           overflow: 'hidden',

@@ -51,6 +51,7 @@ const formatRelativeTime = (dateString) => {
 
 const mapPost = (post, currentUserId) => ({
   id: post?._id,
+  authorId: post?.user?._id,
   authorName: getAuthorName(post?.user),
   authorHeadline: getAuthorHeadline(post?.user),
   authorImage: getAuthorImage(post?.user),
@@ -63,6 +64,7 @@ const mapPost = (post, currentUserId) => ({
   isLiked: Boolean(currentUserId && post?.likes?.includes(currentUserId)),
   comments: (post?.comments || []).map((comment) => ({
     id: comment?._id,
+    commentAuthorId: comment?.user?._id,
     user: getAuthorName(comment?.user),
     text_comment: comment?.content,
     userImage: getAuthorImage(comment?.user),
@@ -80,8 +82,7 @@ function CreatePostComposer({ onCreate, loading }) {
   const avatarSrc = profile?.avatar || undefined;
   const canSubmit = content.trim().length > 0 && !loading;
   const contentLength = content.trim().length;
-  const visibilityLabel =
-    visibility === 'private' ? 'Private circle' : visibility === 'connections' ? 'Connections only' : 'Public';
+  const visibilityLabel = visibility === 'private' ? 'Private circle' : visibility === 'connections' ? 'Connections only' : 'Public';
 
   const handleSubmit = async () => {
     if (!canSubmit) return;
@@ -107,9 +108,10 @@ function CreatePostComposer({ onCreate, loading }) {
         mb: 3,
         borderRadius: 4,
         border: 1,
-        borderColor: 'custom.border',
-        bgcolor: 'background.paper',
+        bgcolor: 'transparent',
         boxShadow: 'custom.shadowLight',
+        border: 'none',
+        alighnItems: 'center',
       }}
     >
       <Box sx={{ position: 'relative', zIndex: 1 }}>
@@ -124,8 +126,8 @@ function CreatePostComposer({ onCreate, loading }) {
               width: 52,
               height: 52,
               alignSelf: { xs: 'flex-start', sm: 'auto' },
-              border: '2px solid',
-              borderColor: 'custom.border',
+              border: 'none',
+              
             }}
           >
             {user?.username?.charAt(0)?.toUpperCase()}
@@ -138,55 +140,21 @@ function CreatePostComposer({ onCreate, loading }) {
               sx={{ mb: 1.5 }}
             >
               <Box>
-                <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 0.5 }}>
                   <Typography sx={{ fontSize: '1rem', fontWeight: 800, color: 'primary.dark' }}>
                     Create a post
                   </Typography>
-                  <Box
-                    sx={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: 0.5,
-                      px: 1,
-                      py: 0.45,
-                      borderRadius: 999,
-                      bgcolor: 'background.default',
-                      border: 1,
-                      borderColor: 'custom.border',
-                      color: 'primary.light',
-                    }}
-                  >
-                    <AutoAwesomeRoundedIcon sx={{ fontSize: 14 }} />
-                    <Typography sx={{ fontSize: '0.72rem', fontWeight: 700 }}>Fresh update</Typography>
-                  </Box>
-                </Stack>
                 <Typography sx={{ color: 'text.secondary', fontSize: '0.9rem' }}>
                   Share a quick win, idea, or announcement with your network.
                 </Typography>
               </Box>
 
-              <Box
-                sx={{
-                  alignSelf: { xs: 'flex-start', sm: 'flex-start' },
-                  px: 1.25,
-                  py: 0.75,
-                  borderRadius: 3,
-                  bgcolor: 'background.default',
-                  border: 1,
-                  borderColor: 'custom.border',
-                }}
-              >
-                <Typography sx={{ fontSize: '0.72rem', color: 'text.secondary', mb: 0.25 }}>Visibility</Typography>
-                <Typography sx={{ fontSize: '0.82rem', fontWeight: 700, color: 'primary.dark' }}>
-                  {visibilityLabel}
-                </Typography>
-              </Box>
+            
             </Stack>
 
             <TextField
               fullWidth
               multiline
-              minRows={4}
+              minRows={2}
               placeholder="What would you like to share today?"
               value={content}
               onChange={(event) => setContent(event.target.value)}
@@ -212,90 +180,6 @@ function CreatePostComposer({ onCreate, loading }) {
                 },
               }}
             />
-
-            <Stack direction={{ xs: 'column', md: 'row' }} spacing={1.5} sx={{ mt: 1.5 }}>
-              <TextField
-                fullWidth
-                placeholder="Optional image URL"
-                value={image}
-                onChange={(event) => setImage(event.target.value)}
-                InputProps={{
-                  startAdornment: <AddPhotoAlternateOutlinedIcon sx={{ color: 'text.secondary', mr: 1 }} />,
-                }}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: 3,
-                    bgcolor: 'background.default',
-                    '& fieldset': { borderColor: 'custom.border' },
-                    '&:hover fieldset': { borderColor: 'primary.light' },
-                    '&.Mui-focused fieldset': { borderColor: 'primary.main' },
-                  },
-                }}
-              />
-
-              <TextField
-                select
-                value={visibility}
-                onChange={(event) => setVisibility(event.target.value)}
-                SelectProps={{
-                  native: true,
-                  IconComponent: KeyboardArrowDownRoundedIcon,
-                }}
-                InputProps={{
-                  startAdornment: <PublicOutlinedIcon sx={{ color: 'text.secondary', mr: 1 }} />,
-                }}
-                sx={{
-                  minWidth: { xs: '100%', md: 180 },
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: 3,
-                    bgcolor: 'background.default',
-                    pr: 0.5,
-                    transition: 'all 0.2s ease',
-                    '& fieldset': {
-                      borderColor: 'custom.border',
-                    },
-                    '&:hover': {
-                      bgcolor: 'background.paper',
-                    },
-                    '&:hover fieldset': {
-                      borderColor: 'primary.light',
-                    },
-                    '&.Mui-focused': {
-                      bgcolor: 'background.paper',
-                    },
-                    '&.Mui-focused fieldset': {
-                      borderColor: 'primary.main',
-                    },
-                  },
-                  '& .MuiInputBase-input': {
-                    fontSize: '0.92rem',
-                    fontWeight: 700,
-                    color: 'primary.dark',
-                  },
-                  '& .MuiSelect-icon': {
-                    color: 'primary.light',
-                    fontSize: 24,
-                    right: 10,
-                    top: 'calc(50% - 12px)',
-                    transition: 'transform 0.2s ease',
-                  },
-                  '& .Mui-focused .MuiSelect-icon': {
-                    transform: 'rotate(180deg)',
-                  },
-                  '& select': {
-                    appearance: 'none',
-                    WebkitAppearance: 'none',
-                    MozAppearance: 'none',
-                    cursor: 'pointer',
-                  },
-                }}
-              >
-                <option value="public">public</option>
-                <option value="private">private</option>
-                <option value="connections">connections</option>
-              </TextField>
-            </Stack>
-
             <Stack
               direction={{ xs: 'column', sm: 'row' }}
               justifyContent="space-between"
@@ -309,9 +193,8 @@ function CreatePostComposer({ onCreate, loading }) {
                     px: 1.1,
                     py: 0.8,
                     borderRadius: 999,
-                    bgcolor: 'background.default',
-                    border: 1,
-                    borderColor: 'custom.border',
+                    bgcolor: 'none',
+                    border: "none"
                   }}
                 >
                   <Typography sx={{ color: 'text.secondary', fontSize: '0.8rem', fontWeight: 600 }}>
@@ -482,6 +365,7 @@ export default function MainSection() {
       {mappedPosts.map((post) => (
         <Post
           key={post.id}
+
           {...post}
           onLike={() => handleToggleLike(post.id)}
           onAddComment={(content) => handleAddComment(post.id, content)}

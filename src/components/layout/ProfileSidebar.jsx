@@ -112,7 +112,8 @@ const MiniProfile = () => {
                         sx={{
                             width: 84,
                             height: 84,
-                            border: '4px solid rgba(255,255,255,0.9)',
+                            border: '4px solid',
+                            borderColor: 'primary.dark',
                             boxShadow: '0 18px 34px rgba(36,0,70,0.2)',
                             cursor: uploading ? 'default' : 'pointer'
                         }}
@@ -163,7 +164,6 @@ const MiniProfile = () => {
                 </Stack>
             </Box>
 
-            <Divider sx={{ borderColor: 'custom.border' }} />
 
             <Box sx={{ position: 'relative', zIndex: 1, p: 1.25 }}>
                 <Link href="/profile" style={{ textDecoration: 'none', color: 'inherit' }}>
@@ -219,7 +219,6 @@ const MiniProfile = () => {
                 </Box>
             </Box>
 
-            <Divider sx={{ borderColor: 'custom.border' }} />
 
             <Box sx={{
                 position: 'relative',
@@ -227,26 +226,6 @@ const MiniProfile = () => {
                 py: 1.5,
                 px: 1.25,
             }}>
-                <Box sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 1.1,
-                    p: 1.25,
-                    borderRadius: 3,
-                    bgcolor: 'background.paper',
-                        border: "none",
-                    cursor: 'pointer',
-                    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-                    '&:hover': { transform: 'translateY(-2px)', boxShadow: 'custom.shadowLight' }
-                }}>
-                    <Box sx={{ width: 34, height: 34, borderRadius: 2.5, bgcolor: 'rgba(91,33,182,0.12)', display: 'grid', placeItems: 'center' }}>
-                        <BookmarkBorderIcon sx={{ fontSize: 18, color: 'primary.main' }} />
-                    </Box>
-                    <Box>
-                        <Typography variant="body2" sx={{ fontSize: '0.88rem', fontWeight: 700, color: 'primary.dark' }}>My items</Typography>
-                        <Typography sx={{ fontSize: '0.76rem', color: 'text.secondary' }}>Saved resources and quick access</Typography>
-                    </Box>
-                </Box>
             </Box>
         </Paper>
     );

@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   AppBar,
   Avatar,
@@ -13,27 +13,19 @@ import {
   Typography,
 } from '@mui/material';
 import { AttachFile, DoneAll, EmojiEmotions, MoreVert, Send } from '@mui/icons-material';
+import { useSelector } from 'react-redux';
 
-const messageMap = {
-  1: [
-    { id: '1-r-1', type: 'received', text: 'Hi there! I reviewed your portfolio and loved the fintech case study.', time: '10:40 AM' },
-    { id: '1-s-1', type: 'sent', text: 'Thank you, Sarah. I am glad it resonated with you.', time: '10:42 AM' },
-    { id: '1-r-2', type: 'received', text: 'Would you be open to a quick intro chat tomorrow?', time: '10:45 AM' },
-    { id: '1-s-2', type: 'sent', text: 'Absolutely. Tomorrow works well for me.', time: '10:46 AM' },
-  ],
-  2: [
-    { id: '2-r-1', type: 'received', text: 'Thanks for the feedback. I pushed the updated branch.', time: 'Yesterday' },
-    { id: '2-s-1', type: 'sent', text: 'Perfect, I will review it tonight.', time: 'Yesterday' },
-  ],
-  3: [
-    { id: '3-r-1', type: 'received', text: 'Let me verify the latest metrics and send you the summary.', time: '2 days ago' },
-  ],
-  4: [
-    { id: '4-r-1', type: 'received', text: 'Meeting at 3 PM still works on my side.', time: '3 days ago' },
-  ],
-  5: [
-    { id: '5-r-1', type: 'received', text: 'CSS Grid is amazing for this layout.', time: '1 week ago' },
-  ],
+import { getConversationMessages, sendMessage } from '@/services/messagesService';
+
+const normalizeMessage = (m) => {
+  const content = m?.content ?? m?.text ?? '';
+  return {
+    id: m?.id ?? m?._id ?? m?.uuid ?? `${m?.createdAt || ''}-${Math.random()}`,
+    type: m?.type ?? m?.senderType ?? (m?.isSent ? 'sent' : 'received'),
+    text: content,
+    time: m?.time ?? m?.createdAt ?? '',
+    raw: m,
+  };
 };
 
 const Bubble = ({ type, text, time, avatar }) => {
@@ -51,7 +43,13 @@ const Bubble = ({ type, text, time, avatar }) => {
       }}
     >
       {!isSent ? <Avatar src={avatar} sx={{ width: 34, height: 34, mt: 0.5 }} /> : null}
-      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: isSent ? 'flex-end' : 'flex-start' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: isSent ? 'flex-end' : 'flex-start',
+        }}
+      >
         <Paper
           elevation={0}
           sx={{
@@ -69,7 +67,9 @@ const Bubble = ({ type, text, time, avatar }) => {
           <Typography sx={{ lineHeight: 1.65, fontSize: '0.9rem' }}>{text}</Typography>
         </Paper>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, px: 0.8, mt: 0.5 }}>
-          <Typography variant="caption" sx={{ color: '#94a3b8', fontSize: '0.7rem' }}>{time}</Typography>
+          <Typography variant="caption" sx={{ color: '#94a3b8', fontSize: '0.7rem' }}>
+            {time}
+          </Typography>
           {isSent ? <DoneAll sx={{ fontSize: 14, color: '#0ea5e9' }} /> : null}
         </Box>
       </Box>
@@ -78,17 +78,72 @@ const Bubble = ({ type, text, time, avatar }) => {
 };
 
 export default function ChatWindow({ conversation }) {
+  const { token } = useSelector((state) => state.user);
   const [message, setMessage] = useState('');
-  const messages = useMemo(() => messageMap[conversation?.id] || [], [conversation?.id]);
+  const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const handleSend = () => {
+  const conversationId = conversation?.id ?? conversation?._id ?? conversation?.conversationId;
+
+  useEffect(() => {
+    if (!token || !conversationId) {
+      setMessages([]);
+      return;
+    }
+
+    let isMounted = true;
+
+    const load = async () => {
+      setLoading(true);
+      try {
+        const res = await getConversationMessages({ token, conversationId, page: 1, limit: 30 });
+        const list = res?.data ?? [];
+        if (!isMounted) return;
+        setMessages(list.map(normalizeMessage));
+      } catch {
+        if (!isMounted) return;
+        setMessages([]);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    load();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [token, conversationId]);
+
+  const handleSend = async () => {
+    if (!token || !conversationId) return;
     if (!message.trim()) return;
+
+    const content = message;
     setMessage('');
+
+    try {
+      await sendMessage({ token, conversationId, content });
+      const res = await getConversationMessages({ token, conversationId, page: 1, limit: 30 });
+      const list = res?.data ?? [];
+      setMessages(list.map(normalizeMessage));
+    } catch {
+      // if send fails, do nothing (UI keeps current list)
+    }
   };
+
+  const viewMessages = useMemo(() => messages, [messages]);
 
   if (!conversation) {
     return (
-      <Box sx={{ flex: 1, display: 'grid', placeItems: 'center', bgcolor: 'rgba(255,255,255,0.28)' }}>
+      <Box
+        sx={{
+          flex: 1,
+          display: 'grid',
+          placeItems: 'center',
+          bgcolor: 'rgba(255,255,255,0.28)',
+        }}
+      >
         <Typography sx={{ color: '#64748b' }}>Select a conversation to start messaging.</Typography>
       </Box>
     );
@@ -105,12 +160,22 @@ export default function ChatWindow({ conversation }) {
         bgcolor: 'rgba(255,255,255,0.22)',
       }}
     >
-      <AppBar position="static" color="inherit" elevation={0} sx={{ bgcolor: 'transparent', borderBottom: '1px solid rgba(226,232,240,0.85)' }}>
+      <AppBar
+        position="static"
+        color="inherit"
+        elevation={0}
+        sx={{ bgcolor: 'transparent', borderBottom: '1px solid rgba(226,232,240,0.85)' }}
+      >
         <Toolbar sx={{ justifyContent: 'space-between', minHeight: { xs: 64, md: 74 } }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.75 }}>
-            <Avatar src={conversation.avatar} sx={{ width: 42, height: 42, boxShadow: '0 10px 20px rgba(15,23,42,0.08)' }} />
+            <Avatar
+              src={conversation.avatar}
+              sx={{ width: 42, height: 42, boxShadow: '0 10px 20px rgba(15,23,42,0.08)' }}
+            />
             <Box>
-              <Typography sx={{ fontWeight: 800, fontSize: '0.98rem', color: '#0f172a' }}>{conversation.name}</Typography>
+              <Typography sx={{ fontWeight: 800, fontSize: '0.98rem', color: '#0f172a' }}>
+                {conversation.name}
+              </Typography>
               <Typography sx={{ color: '#64748b', fontSize: '0.77rem' }}>
                 {conversation.role} {conversation.online ? '• Online' : '• Offline'}
               </Typography>
@@ -141,10 +206,12 @@ export default function ChatWindow({ conversation }) {
         }}
       >
         <Divider sx={{ mb: 3 }}>
-          <Typography variant="caption" sx={{ color: '#94a3b8', fontSize: '0.7rem' }}>TODAY</Typography>
+          <Typography variant="caption" sx={{ color: '#94a3b8', fontSize: '0.7rem' }}>
+            {loading ? 'LOADING...' : 'TODAY'}
+          </Typography>
         </Divider>
 
-        {messages.map((item) => (
+        {viewMessages.map((item) => (
           <Bubble
             key={item.id}
             type={item.type}
@@ -155,7 +222,13 @@ export default function ChatWindow({ conversation }) {
         ))}
       </Box>
 
-      <Box sx={{ p: 2, borderTop: '1px solid rgba(226,232,240,0.85)', bgcolor: 'rgba(255,255,255,0.34)' }}>
+      <Box
+        sx={{
+          p: 2,
+          borderTop: '1px solid rgba(226,232,240,0.85)',
+          bgcolor: 'rgba(255,255,255,0.34)',
+        }}
+      >
         <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: 1 }}>
           <IconButton size="small" sx={{ mb: 0.5, color: '#64748b' }}>
             <AttachFile fontSize="small" />
@@ -202,3 +275,4 @@ export default function ChatWindow({ conversation }) {
     </Box>
   );
 }
+
