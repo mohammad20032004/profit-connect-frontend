@@ -1,91 +1,51 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
+import apiClient from '@/lib/apiClient';
 
-const getHeaders = (token, withJson = true) => {
-  const headers = {};
-
-  if (withJson) {
-    headers['Content-Type'] = 'application/json';
-  }
-
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
-  }
-
-  return headers;
-};
-
-const parseResponse = async (response, fallbackMessage) => {
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.message || fallbackMessage);
-  }
-
-  return data;
-};
-
-export const createCompany = async ({ token, companyData }) => {
-  const response = await fetch(`${API_URL}/api/companies`, {
+export const createCompany = ({ token, companyData }) => {
+  return apiClient('/companies', {
     method: 'POST',
-    headers: getHeaders(token),
-    body: JSON.stringify(companyData),
+    token,
+    body: companyData,
   });
-
-  return parseResponse(response, 'Failed to create company');
 };
 
-export const getCompanies = async (token) => {
-  const response = await fetch(`${API_URL}/api/companies`, {
-    method: 'GET',
-    headers: getHeaders(token),
-  });
-
-  return parseResponse(response, 'Failed to load companies');
+export const getCompanies = (token) => {
+  return apiClient('/companies', { token });
 };
 
-export const getCompanyById = async ({ token, companyId }) => {
-  const response = await fetch(`${API_URL}/api/companies/${companyId}`, {
-    method: 'GET',
-    headers: getHeaders(token),
-  });
-
-  return parseResponse(response, 'Failed to load company');
+export const getCompanyById = ({ token, companyId }) => {
+  return apiClient(`/companies/${companyId}`, { token });
 };
 
-export const toggleCompanyFollow = async ({ token, companyId }) => {
-  const response = await fetch(`${API_URL}/api/companies/${companyId}/follow`, {
+/**
+ * Toggles the follow status for a company.
+ * @param {object} params - The parameters for the request.
+ * @param {string} params.token - The JWT token for authentication.
+ * @param {string} params.companyId - The ID of the company to follow/unfollow.
+ * @returns {Promise<{ isFollowing: boolean, followersCount: number }>} The updated follow status and count.
+ */
+export const toggleCompanyFollow = ({ token, companyId }) => {
+  return apiClient(`/companies/${companyId}/follow`, {
     method: 'POST',
-    headers: getHeaders(token),
+    token,
   });
-
-  return parseResponse(response, 'Failed to update company follow status');
 };
 
-export const addCompanyAdmin = async ({ token, companyId, newAdminId }) => {
-  const response = await fetch(`${API_URL}/api/companies/${companyId}/admins`, {
+export const addCompanyAdmin = ({ token, companyId, newAdminId }) => {
+  return apiClient(`/companies/${companyId}/admins`, {
     method: 'POST',
-    headers: getHeaders(token),
-    body: JSON.stringify({ newAdminId }),
+    token,
+    body: { newAdminId },
   });
-
-  return parseResponse(response, 'Failed to add company admin');
 };
 
-export const getPendingCompanies = async (token) => {
-  const response = await fetch(`${API_URL}/api/admin/companies/pending`, {
-    method: 'GET',
-    headers: getHeaders(token),
-  });
-
-  return parseResponse(response, 'Failed to load pending companies');
+export const getPendingCompanies = (token) => {
+  return apiClient('/admin/companies/pending', { token });
 };
 
-export const updateCompanyStatus = async ({ token, companyId, status }) => {
-  const response = await fetch(`${API_URL}/api/admin/companies/${companyId}/status`, {
+export const updateCompanyStatus = ({ token, companyId, status }) => {
+  return apiClient(`/admin/companies/${companyId}/status`, {
     method: 'PUT',
-    headers: getHeaders(token),
-    body: JSON.stringify({ status }),
+    token,
+    body: { status },
   });
-
-  return parseResponse(response, 'Failed to update company status');
 };
