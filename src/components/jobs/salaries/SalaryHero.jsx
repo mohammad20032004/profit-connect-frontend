@@ -12,6 +12,12 @@ const SalaryHero = ({ filters, options, onChange, onSubmit, onClear, totalRecord
     position: 'relative',
     overflow: 'hidden',
     borderRadius: '0 0 32px 32px',
+    px: { xs: 2, md: 10 },
+    backgroundImage: 'url("/Images/Salaries-background.jpg")',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+     
+
   }}>
     <Container maxWidth="xl">
       <Box sx={{ maxWidth: 760, mb: 5 }}>
@@ -29,7 +35,8 @@ const SalaryHero = ({ filters, options, onChange, onSubmit, onClear, totalRecord
       </Box>
 
       <Card sx={{
-        p: 3,
+        p: 4,
+        m:6,
         borderRadius: 4,
         display: 'grid',
         gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)', xl: '2fr 2fr 1.5fr 1.5fr auto auto' },
@@ -109,11 +116,11 @@ const SalaryHero = ({ filters, options, onChange, onSubmit, onClear, totalRecord
           variant="contained"
           onClick={onSubmit}
           sx={{
-            bgcolor: '#0ea5e9',
+            bgcolor: '#290e38',
             minHeight: 40,
             px: 4,
             fontWeight: 800,
-            '&:hover': { bgcolor: '#0284c7' },
+            '&:hover': { bgcolor: '#200f2ad3' },
           }}
         >
           Search

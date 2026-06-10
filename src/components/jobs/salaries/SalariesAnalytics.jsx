@@ -269,19 +269,19 @@ const SalariesAnalytics = () => {
           <Grid item xs={12} lg={4}>
             <Box
               sx={{
-                display: 'grid',
-                gridTemplateColumns: { xs: '1fr', xl: '1fr 1fr' },
+              display: 'flex',
+              flexwrap: 'wrap',
                 gap: 3,
                 height: '100%',
                 alignItems: 'stretch',
               }}
             >
-              <Card sx={{ p: 3, borderRadius: 4, border: '1px solid #e2e8f0', boxShadow: 'none', height: '100%' }}>
+              <Card sx={{ p: 3, borderRadius: 4, border: 'none', boxShadow: 'none', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: 5 , backgroundColor: 'transparent'}}>
                 <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 2 }}>
                   <PublicIcon sx={{ color: '#0ea5e9' }} />
                   <Typography sx={{ fontWeight: 900, color: '#0f172a' }}>Market Snapshot</Typography>
                 </Stack>
-                <Stack spacing={1.25}>
+                <Stack spacing={1.25} direction={'row'}>
                   {stats.slice(0, 4).map((item) => (
                     <Box key={item._id} sx={{ p: 1.5, borderRadius: 3, bgcolor: '#f8fafc', border: '1px solid #e2e8f0' }}>
                       <Typography sx={{ fontWeight: 800, color: '#0f172a', fontSize: '0.9rem' }}>{item._id}</Typography>
@@ -297,6 +297,7 @@ const SalariesAnalytics = () => {
                     </Typography>
                   )}
                 </Stack>
+              <ExperienceInsights experienceData={experienceData} />
               </Card>
 
               <Card sx={{ p: 3, borderRadius: 4, border: '1px solid #e2e8f0', boxShadow: 'none', height: '100%', background: 'linear-gradient(180deg, #eff6ff 0%, #ffffff 100%)' }}>
@@ -327,31 +328,17 @@ const SalariesAnalytics = () => {
                     No grouped benchmark is available for the current filters.
                   </Typography>
                 )}
-              </Card>
-            </Box>
-          </Grid>
-
-          <Grid item xs={12}>
-            <Box
-              sx={{
-                display: 'grid',
-                gridTemplateColumns: { xs: '1fr', xl: '1.2fr 0.8fr' },
-                gap: 3,
-                alignItems: 'stretch',
-              }}
-            >
-              <Card sx={{ p: 3.5, borderRadius: 4, border: '1px solid #e2e8f0', boxShadow: 'none', background: 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)' }}>
-                <Typography sx={{ fontWeight: 900, color: '#0f172a', fontSize: '1.15rem', mb: 0.75 }}>
+               <Typography sx={{ fontWeight: 900, color: '#0f172a', fontSize: '1.15rem', mb: 0.75 }}>
                   Search Interpretation
                 </Typography>
                 <Typography sx={{ color: '#64748b', lineHeight: 1.8, maxWidth: 860 }}>
                   Use job title and country for focused benchmarking, then narrow by category and experience level. The chart reflects the current result page, while the market snapshot reflects grouped API statistics from the broader filtered dataset.
                 </Typography>
               </Card>
-
-              <ExperienceInsights experienceData={experienceData} />
             </Box>
           </Grid>
+
+          
         </Grid>
 
         <Box sx={{ mt: 5 }}>
