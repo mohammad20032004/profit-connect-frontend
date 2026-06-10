@@ -9,33 +9,22 @@ import {
 } from '@mui/icons-material';
 import SignupHeader from './SignupHeader';
 
-const colors = {
-  primary: "#6b10c6",
-  bgLight: "#f7f6f8",
-  textPurple: "#4b3d5a",
-  borderLight: "#dbcfe7",
-};
-
 export default function SignupPageStep3({ onBack, onComplete, loading = false }) {
-  // مصفوفة لتخزين الأرقام الأربعة
   const [otp, setOtp] = useState(['', '', '', '']);
   const inputRefs = useRef([]);
 
-  // معالجة تغيير النص في خانات OTP
   const handleChange = (index, value) => {
-    if (isNaN(value)) return; // قبول الأرقام فقط
+    if (isNaN(value)) return;
 
     const newOtp = [...otp];
     newOtp[index] = value.substring(value.length - 1);
     setOtp(newOtp);
 
-    // انتقال التركيز للخانة التالية تلقائياً
     if (value && index < 3) {
       inputRefs.current[index + 1].focus();
     }
   };
 
-  // معالجة الضغط على زر Backspace
   const handleKeyDown = (index, e) => {
     if (e.key === 'Backspace' && !otp[index] && index > 0) {
       inputRefs.current[index - 1].focus();
@@ -43,46 +32,37 @@ export default function SignupPageStep3({ onBack, onComplete, loading = false })
   };
 
   return (
-    <Box sx={{ bgcolor: colors.bgLight, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-
-      {/* 1. Header Area */}
+    <Box sx={{ bgcolor: 'background.default', minHeight: '100vh' }}>
       <SignupHeader />
-      {/* 2. Main Content */}
-      <Container maxWidth="xs" sx={{ mt: 2 }}>
-        <Paper elevation={0} sx={{ borderRadius: 4, border: '1px solid #ede7f3', overflow: 'hidden' }}>
+      <Container maxWidth="xs" sx={{ py: { xs: 4, md: 6 } }}>
+        <Paper elevation={0} sx={{ borderRadius: 4, border: '1px solid', borderColor: 'divider', boxShadow: 'custom.shadowLight' }}>
 
           {/* Progress Bar */}
-          <Box sx={{ p: 3, pb: 1 }}>
+          <Box sx={{ p: 3, pb: 1, borderBottom: '1px solid', borderColor: 'divider' }}>
             <Stack direction="row" justifyContent="space-between" sx={{ mb: 1 }}>
               <Typography variant="body2" sx={{ fontWeight: 'bold' }}>Step 3: Verification</Typography>
-              <Typography variant="body2" sx={{ fontWeight: 'bold' }}>100%</Typography>
+              <Typography variant="body2" sx={{ fontWeight: 'bold', color: 'primary.main' }}>100%</Typography>
             </Stack>
             <LinearProgress
               variant="determinate"
               value={100}
-              sx={{ height: 8, borderRadius: 4, bgcolor: '#dbcfe7', '& .MuiLinearProgress-bar': { bgcolor: colors.primary } }}
+              sx={{ height: 8, borderRadius: 4, bgcolor: 'background.default' }}
             />
-            <Typography variant="caption" sx={{ color: colors.primary, fontWeight: 'bold', mt: 1, display: 'block' }}>
-              Final Step
-            </Typography>
           </Box>
 
-          {/* Icon Illustration */}
-          <Box sx={{ display: 'flex', justifyContent: 'center', pt: 4 }}>
-            <Avatar sx={{ width: 96, height: 96, bgcolor: 'rgba(107, 16, 198, 0.1)' }}>
-              <MarkEmailUnread sx={{ fontSize: 48, color: colors.primary }} />
+          {/* Content Area */}
+          <Box sx={{ p: { xs: 3, sm: 4 }, textAlign: 'center' }}>
+            <Avatar sx={{ width: 80, height: 80, bgcolor: 'primary.light', color: 'primary.main', mx: 'auto', mb: 3 }}>
+              <MarkEmailUnread sx={{ fontSize: 40 }} />
             </Avatar>
-          </Box>
 
-          {/* Text Content */}
-          <Box sx={{ p: 4, textAlign: 'center' }}>
             <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 1 }}>Verify your account</Typography>
-            <Typography variant="body2" sx={{ color: colors.textPurple, px: 2 }}>
-              We sent a 4-digit code to your email address. Please enter it below to complete your profile.
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>
+              We sent a 4-digit code to your email. Please enter it below to complete your profile.
             </Typography>
 
             {/* OTP Inputs */}
-            <Stack direction="row" spacing={2} justifyContent="center" sx={{ my: 4 }}>
+            <Stack direction="row" spacing={2} justifyContent="center" sx={{ mb: 4 }}>
               {otp.map((digit, index) => (
                 <TextField
                   key={index}
@@ -93,45 +73,33 @@ export default function SignupPageStep3({ onBack, onComplete, loading = false })
                   variant="outlined"
                   placeholder="•"
                   inputProps={{
-                    style: { textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold', padding: '12px 0' },
+                    style: { textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' },
                     maxLength: 1
                   }}
                   sx={{
-                    width: 56, height: 64,
+                    width: { xs: 48, sm: 56 },
                     '& .MuiOutlinedInput-root': {
                       borderRadius: 2,
-                      '& fieldset': { borderColor: colors.borderLight, borderWidth: 2 },
-                      '&.Mui-focused fieldset': { borderColor: colors.primary },
+                      '& fieldset': { borderWidth: 2 },
                     }
                   }}
                 />
               ))}
             </Stack>
 
-            {/* Complete Button */}
-          <Link
-            href="#"
-            underline="none"
-            onClick={(event) => {
-              event.preventDefault();
-              if (loading) return;
-              onComplete();
-            }}
-            sx={{ display: 'block', mb: 2 }}
-          >
             <Button
               variant="contained"
               fullWidth
               disabled={loading}
-              sx={{ bgcolor: colors.primary, fontWeight: 'bold', textTransform: 'none', '&:hover': { bgcolor: '#560ca3' } }}
+              onClick={onComplete}
+              sx={{ py: 1.5, mb: 2, fontSize: '1rem' }}
             >
               {loading ? 'Creating Account...' : 'Complete Profile'}
             </Button>
-          </Link>
 
-            <Typography variant="body2" sx={{ color: colors.textPurple }}>
+            <Typography variant="body2" color="text.secondary">
               Didn&apos;t receive the code?{' '}
-              <Link href="#" sx={{ color: colors.primary, fontWeight: 'bold', textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>
+              <Link href="#" sx={{ color: 'primary.main', fontWeight: 'bold', textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>
                 Resend Code
               </Link>
             </Typography>
@@ -139,13 +107,9 @@ export default function SignupPageStep3({ onBack, onComplete, loading = false })
         </Paper>
 
         {/* Back Button */}
-        <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
-          <Button
-            startIcon={<ArrowBack sx={{ fontSize: 'small' }} />}
-            onClick={onBack}
-            sx={{ color: colors.textPurple, textTransform: 'none', fontWeight: '500' }}
-          >
-            Back to email settings
+        <Box sx={{ mt: 3, textAlign: 'center' }}>
+          <Button startIcon={<ArrowBack />} onClick={onBack} sx={{ color: 'text.secondary' }}>
+            Back
           </Button>
         </Box>
       </Container>

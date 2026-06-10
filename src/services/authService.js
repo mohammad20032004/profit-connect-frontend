@@ -1,58 +1,35 @@
 // src/services/authService.js
+import apiClient from '@/lib/apiClient';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
-
-export const getCurrentUser = async (token) => {
-  const response = await fetch(`${API_URL}/api/auth/me`, {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-  });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.message || 'Failed to load user data');
-  }
-
-  return data;
+/**
+ * Fetches the current authenticated user's data.
+ * @param {string} token - The JWT token for authentication.
+ * @returns {Promise<any>} The user data.
+ */
+export const getCurrentUser = (token) => {
+  return apiClient('/auth/me', { token });
 };
 
-export const login = async (credentials) => {
-  const response = await fetch(`${API_URL}/api/auth/login`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(credentials),
+/**
+ * Logs a user in.
+ * @param {object} credentials - The user's credentials (e.g., email, password).
+ * @returns {Promise<any>} The login response data, typically including a token.
+ */
+export const login = (credentials) => {
+  return apiClient('/auth/login', { 
+    method: 'POST', 
+    body: credentials 
   });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.message || 'Login failed');
-  }
-
-  return data;
 };
 
-export const signUp = async (userData) => {
-  const response = await fetch(`${API_URL}/api/auth/signup`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(userData),
+/**
+ * Signs a new user up.
+ * @param {object} userData - The new user's information.
+ * @returns {Promise<any>} The signup response data.
+ */
+export const signUp = (userData) => {
+  return apiClient('/auth/signup', { 
+    method: 'POST', 
+    body: userData 
   });
-
-  const data = await response.json();
-
-  // Throw a clear error so the component can handle it properly.
-  if (!response.ok) {
-    throw new Error(data.message || 'Signup failed');
-  }
-
-  return data;
 };

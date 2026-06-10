@@ -1,64 +1,133 @@
 'use client';
 
-import React, { useCallback } from 'react';
-import { Box, Avatar, Typography, Paper } from '@mui/material';
-import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+import {
+  Modal,
+  Box,
+  Typography,
+  IconButton,
+  Divider,
+  TextField,
+  Button,
+  Avatar,
+  Stack
+} from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import SendIcon from '@mui/icons-material/Send';
+import Comment from './Comment';
 
-export default function Comment({ user, text_comment, userImage, timeAgo = 'الآن', userId }) {
-  const router = useRouter();
+const CommentsModal = ({ open, onClose, comments = [], postAuthor, onAddComment }) => {
+  const profile = useSelector((state) => state.user.profile);
+  const user = useSelector((state) => state.user.user);
+  const [newComment, setNewComment] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleClickUser = useCallback(() => {
-    if (userId) {
-      router.push(`/user-profile/${userId}`);
+  const avatarSrc = profile?.avatar || undefined;
+
+  const handleAddComment = async () => {
+    if (!newComment.trim()) {
+      return;
     }
-  }, [router, userId]);
+
+    try {
+      setLoading(true);
+      await onAddComment?.(newComment.trim());
+      setNewComment('');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <Box sx={{ display: 'flex', gap: 1.5 }}>
-      <Avatar
-        src={userImage || `https://i.pravatar.cc/150?u=${user}`}
-        sx={{ width: 40, height: 40, cursor: userId ? 'pointer' : 'default' }}
-        onClick={handleClickUser}
-      />
-      <Box sx={{ flex: 1 }}>
-        <Paper
-          elevation={0}
-          sx={{
-            bgcolor: '#f3f6f8',
-            p: 1.5,
-            borderRadius: 2,
-            border: '1px solid #e0e0e0',
-          }}
-        >
-          <Typography
-            role="button"
-            tabIndex={0}
-            onClick={handleClickUser}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') handleClickUser();
-            }}
-            variant="subtitle2"
+    <Modal open={open} onClose={onClose}>
+      <Box sx={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: { xs: '95%', sm: '600px' },
+        maxHeight: '80vh',
+        bgcolor: 'background.paper',
+        borderRadius: 2,
+        boxShadow: 24,
+        display: 'flex',
+        flexDirection: 'column'
+      }}>
+        {/* Header */}
+        <Box sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+            {postAuthor}&apos;s post
+          </Typography>
+          <IconButton onClick={onClose} size="small">
+            <CloseIcon />
+          </IconButton>
+        </Box>
+
+        <Divider />
+
+        {/* Comments List */}
+        <Box sx={{ flex: 1, overflowY: 'auto', p: 2 }}>
+          {comments.length > 0 ? (
+            <Stack spacing={2}>
+{comments.map((comment, index) => (
+                <Comment
+                  key={index}
+                  {...comment}
+                  userId={
+                    comment?.userId ||
+                    comment?.user_id ||
+                    comment?.userid ||
+                    comment?.user?._id ||
+                    comment?.user?.id ||
+                    comment?.id
+                  }
+                />
+              ))}
+
+            </Stack>
+          ) : (
+            <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 4 }}>
+             No Comment Yet!
+            </Typography>
+          )}
+        </Box>
+
+        <Divider />
+
+        {/* Add Comment */}
+        <Box sx={{ p: 2, display: 'flex', gap: 1, alignItems: 'flex-start' }}>
+          <Avatar sx={{ width: 32, height: 32 }} src={avatarSrc}>
+            {user?.username?.charAt(0)?.toUpperCase()}
+          </Avatar>
+          <TextField
+            fullWidth
+            multiline
+            maxRows={4}
+            placeholder="Add Comment..."
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+            variant="outlined"
+            size="small"
+            sx={{ bgcolor: '#f3f6f8', '& .MuiOutlinedInput-root': { borderRadius: 3 } }}
+          />
+          <Button
+            variant="contained"
+            onClick={handleAddComment}
+            disabled={!newComment.trim() || loading}
             sx={{
-              fontWeight: 'bold',
-              mb: 0.5,
-              cursor: userId ? 'pointer' : 'default',
-              display: 'inline-block',
-              '&:hover': userId ? {
-                color: '#0ea5e9',
-                textDecoration: 'underline',
-              } : {},
+              minWidth: 'auto',
+              px: 2,
+              bgcolor: '#00B4D8',
+              '&:hover': { bgcolor: '#0096b8' }
             }}
           >
-            {user}
-          </Typography>
-          <Typography variant="body2" sx={{ color: '#191919', lineHeight: 1.5 }}>
-            {text_comment}
-          </Typography>
-        </Paper>
-        <Typography variant="caption" sx={{ color: '#666', ml: 1.5, mt: 0.5, display: 'block' }}>
-          {timeAgo}
-        </Typography>
+            <SendIcon sx={{ fontSize: 20 }} />
+          </Button>
+        </Box>
       </Box>
-    </Box>
+    </Modal>
   );
-}
+};
+
+export default CommentsModal;

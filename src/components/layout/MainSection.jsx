@@ -41,9 +41,10 @@ const formatRelativeTime = (dateString) => {
 
   const now = new Date();
   const date = new Date(dateString);
-  const diffInSeconds = Math.max(1, Math.floor((now - date) / 1000));
+  const diffInSeconds = Math.floor((now - date) / 1000);
 
-  if (diffInSeconds < 60) return 'now';
+  if (diffInSeconds < 2) return 'now';
+  if (diffInSeconds < 60) return `${diffInSeconds}s`;
   if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m`;
   if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h`;
   return `${Math.floor(diffInSeconds / 86400)}d`;
@@ -66,7 +67,7 @@ const mapPost = (post, currentUserId) => ({
     id: comment?._id,
     commentAuthorId: comment?.user?._id,
     user: getAuthorName(comment?.user),
-    text_comment: comment?.content,
+    text_comment: comment?.content || comment?.text_comment,
     userImage: getAuthorImage(comment?.user),
     timeAgo: formatRelativeTime(comment?.createdAt),
   })),
@@ -362,10 +363,9 @@ export default function MainSection() {
         </Paper>
       ) : null}
 
-      {mappedPosts.map((post) => (
+      {mappedPosts.map((post, index) => (
         <Post
-          key={post.id}
-
+          key={`${post.id}-${index}`}
           {...post}
           onLike={() => handleToggleLike(post.id)}
           onAddComment={(content) => handleAddComment(post.id, content)}

@@ -1,69 +1,82 @@
-"use client";
-import React from 'react';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
+'use client'
+import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme({
   palette: {
+    mode: 'light',
     primary: {
-      light: '#5b21b6',
-      main: '#7B2CBF',
-      dark: '#240046',
+      main: '#240046', // لون مشروعك الأساسي
+      light: '#52297c',
+      dark: '#1a0031',
       contrastText: '#ffffff',
     },
     secondary: {
-      light: '#38bdf8',
-      main: '#0ea5e9',
-      dark: '#0284c7',
+      main: '#0a66c2', // لون الروابط أو الأزرار الثانوية
       contrastText: '#ffffff',
     },
-    success: {
-      main: '#10b981',
-      dark: '#059669',
-    },
     background: {
-      default: '#f4f6f8',
-      paper: '#ffffff',
-      neutral: '#cbd5e1',
+      default: '#f4f5f7', // خلفية رمادية فاتحة
+      paper: '#ffffff',   // خلفية البطاقات
     },
     text: {
-      primary: '#111827',
-      secondary: '#64748b',
+      primary: '#111827', // لون النص الأساسي
+      secondary: '#6b7280', // لون النص الباهت
     },
+    divider: '#e5e7eb', // لون الفواصل والحدود
     custom: {
-      border: 'rgba(0,0,0,0.08)',
-      shadowLight: '0 4px 12px rgba(0,0,0,0.05)',
-      glass: 'rgba(255,255,255,0.46)',
-      glassBorder: 'rgba(255,255,255,0.6)',
+      shadowLight: '0 2px 4px rgba(0,0,0,0.02), 0 1px 2px rgba(0,0,0,0.03)',
+      cardBorder: '#e5e7eb',
+      hover: '#f9fafb'
     }
   },
   typography: {
     fontFamily: 'var(--font-dubai), sans-serif',
+    h6: {
+        fontWeight: 800,
+    },
+    subtitle1:{
+      fontWeight:800,
+    },
+    button:{
+      fontWeight: 700,
+    }
   },
   components: {
     MuiButton: {
       styleOverrides: {
         root: {
-          textTransform: 'none',
+          textTransform: 'none', // لا تجعل الحروف كبيرة
+          borderRadius: 8, // مثال على زوايا دائرية
         },
       },
+    },
+    MuiPaper: {
+        styleOverrides: {
+            root: {
+                borderRadius: 12,
+            }
+        }
     },
     MuiTextField: {
+      defaultProps: {
+        variant: 'outlined',
+      },
+      styleOverrides:{
+        root:{
+          fontFamily: 'var(--font-dubai), sans-serif',
+        }
+      }
+    },
+     MuiCard: {
       styleOverrides: {
         root: {
-          fontFamily: 'var(--font-dubai), sans-serif',
-        },
-      },
-    },
+          borderRadius: 16,
+          boxShadow: 'none', // إزالة الظل الافتراضي
+          border: '1px solid #e5e7eb', // إضافة حد للبطاقة
+        }
+      }
+    }
   },
 });
-
-export const AppThemeProvider = ({ children }) => {
-  return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
-};
-
-export const ThemedButton = (props) => <Button {...props} />;
-export const ThemedInput = (props) => <TextField {...props} />;
 
 export default theme;
