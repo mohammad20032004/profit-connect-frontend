@@ -5,7 +5,6 @@ import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import {
     Box,
-    Grid,
     Typography,
     TextField,
     Button,
@@ -53,15 +52,38 @@ export default function LoginPage() {
     };
 
     return (
-        <Container maxWidth="xl" sx={{ height: '100vh', py: { xs: 2, md: 4 }, display: 'flex', alignItems: 'center' }}>
-            <Grid container sx={{ height: { xs: 'auto', md: '90vh' }, width: '100%', boxShadow: { md: '0px 8px 40px rgba(0,0,0,0.12)' }, borderRadius: { md: 5 }, overflow: 'hidden' }}>
+        <Container 
+            maxWidth="xl" 
+            sx={{ 
+                minHeight: '100vh', 
+                py: { xs: 4, md: 2 }, 
+                display: 'flex', 
+                alignItems: 'center',
+                justifyContent: 'center'
+            }}
+        >    
+            {/* الحاوية الرئيسية تحولت إلى Flexbox */}
+            <Box 
+                sx={{ 
+                    display: 'flex',
+                    // xs: عمودي (فوق بعض)، md: أفقي (بجانب بعض لتقسيم المساحة)
+                    flexDirection: { xs: 'column', md: 'row' }, 
+                    height: { xs: 'auto', md: '90vh' }, 
+                    minHeight: { md: '650px' },
+                    width: '100%', 
+                    boxShadow: { xs: 'none', sm: '0px 8px 40px rgba(0,0,0,0.12)' }, 
+                    borderRadius: { xs: 0, sm: 5 }, 
+                    overflow: 'hidden',
+                    backgroundColor: 'background.paper',
+                    mx: {xs: 0, md: 4,lg: 15}
+                }}
+            >
 
-                {/* Left Side (Image & Branding) */}
-                <Grid
-                    item
-                    xs={12}
-                    md={6}
+                {/* القسم الأيسر الصوري (Image & Branding) */}
+                {/* يأخذ flex: 1 في الشاشات الكبيرة ليقسم المساحة بالتساوي (50%)، ويختفي في الشاشات الصغيرة */}
+                <Box
                     sx={{
+                        flex: 1, 
                         position: 'relative',
                         background: (theme) => `linear-gradient(rgba(36, 0, 70, 0.85), rgba(36, 0, 70, 0.85)), url(/Images/login-photo.png)`,
                         backgroundSize: 'cover',
@@ -74,38 +96,44 @@ export default function LoginPage() {
                     }}
                 >
                     <Box sx={{ textAlign: 'center', px: 4, maxWidth: '500px' }}>
-                        <Image src={'/logo/white-logo.svg'} alt='logo' width={150} height={150} />
-                        <Typography variant="h3" fontWeight="bold" sx={{ mb: 2 }}>
+                        <Image src={'/logo/white-logo.svg'} alt='logo' width={120} height={120} style={{ marginBottom: '16px' }} />
+                        <Typography variant="h3" fontWeight="bold" sx={{ mb: 2, fontSize: { md: '2rem', lg: '2.5rem' } }}>
                             Build your professional future today.
                         </Typography>
-                        <Typography variant="h6" sx={{ fontWeight: 'normal', opacity: 0.9 }}>
+                        <Typography variant="h6" sx={{ fontWeight: 'normal', opacity: 0.9, fontSize: { md: '0.95rem', lg: '1.1rem' } }}>
                             Join thousands of professionals accelerating their careers with personalized pathways and networking.
                         </Typography>
                     </Box>
                     <Box sx={{ position: 'absolute', bottom: 40, left: 40 }}>
                         <Logo variant="light" />
                     </Box>
-                </Grid>
+                </Box>
 
-                {/* Right Side (Form) */}
-                <Grid
-                    item
-                    xs={12}
-                    md={6}
+                {/* القسم الأيمن (Form) */}
+                {/* يأخذ flex: 1 ليمثل الـ 50% الأخرى في الشاشات الكبيرة، ويأخذ العرض الكامل 100% في الشاشات الصغيرة */}
+                <Box
                     sx={{
+                        flex: 1, 
+                        width: { xs: '100%', md: 'auto' }, 
                         display: 'flex',
                         alignItems: 'center',
-                        justifyContent: 'center',
+                        justifyContent: 'flex-start',
                         backgroundColor: 'background.paper',
-                        p: { xs: 3, sm: 5, md: 6 }
+                        p: { xs: 2, sm: 5, md: 2 },
+                        overflowY: 'auto'
                     }}
                 >
-                    <Box sx={{ width: '100%', maxWidth: '450px' }}>
+                    <Box sx={{ width: '100%', maxWidth: '550px' , px: { xs: 2, sm: 4 }, py: { xs: 3, sm: 6 }, mx: 'auto' }}>
                         <Logo />
-                        <Typography variant="h4" fontWeight="bold" gutterBottom sx={{ mt: 3, color: 'text.primary' }}>
+                        <Typography 
+                            variant="h4" 
+                            fontWeight="bold" 
+                            gutterBottom 
+                            sx={{ mt: 3, color: 'text.primary', fontSize: { xs: '1.75rem', sm: '2.1rem' } }}
+                        >
                             Welcome Back
                         </Typography>
-                        <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
+                        <Typography variant="body1" color="text.secondary" sx={{ mb: 4, fontSize: { xs: '0.9rem', sm: '1rem' } }}>
                             Please enter your details to sign in.
                         </Typography>
 
@@ -135,12 +163,12 @@ export default function LoginPage() {
                                     }}
                                 />
 
-                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: { xs: 1, sm: 0 }, justifyContent: 'space-between', alignItems: { xs: 'flex-start', sm: 'center' } }}>
                                     <FormControlLabel
                                         control={<Checkbox defaultChecked sx={{ '&.Mui-checked': { color: 'primary.main' } }} />}
                                         label={<Typography variant="body2">Remember me</Typography>}
                                     />
-                                    <Link href="#" underline="hover" sx={{ color: 'secondary.main', fontWeight: 'bold' }}>
+                                    <Link href="#" underline="hover" sx={{ color: 'secondary.main', fontWeight: 'bold', fontSize: '0.875rem' }}>
                                         Forgot Password?
                                     </Link>
                                 </Box>
@@ -151,16 +179,7 @@ export default function LoginPage() {
                             </Stack>
                         </form>
 
-                        <Divider sx={{ my: 4 }}>Or continue with</Divider>
-
-                        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                            <Button fullWidth variant="outlined" startIcon={<GoogleIcon />} sx={{ py: 1.2 }}>
-                                Google
-                            </Button>
-                            <Button fullWidth variant="outlined" startIcon={<LinkedInIcon color="primary" />} sx={{ py: 1.2 }}>
-                                LinkedIn
-                            </Button>
-                        </Stack>
+                       
 
                         <Typography variant="body2" color="text.secondary" sx={{ mt: 4, textAlign: 'center' }}>
                             Don&apos;t have an account?{' '}
@@ -169,8 +188,9 @@ export default function LoginPage() {
                             </Link>
                         </Typography>
                     </Box>
-                </Grid>
-            </Grid>
+                </Box>
+                
+            </Box>
         </Container>
     );
 }

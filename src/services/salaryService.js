@@ -24,7 +24,7 @@ const parseResponse = async (response, fallbackMessage) => {
 };
 
 export const getSalaries = async (filters = {}) => {
-  const response = await fetch(`${API_URL}/api/salaries${buildQueryString(filters)}`, {
+  const response = await fetch(`${API_URL}/salaries${buildQueryString(filters)}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -35,7 +35,7 @@ export const getSalaries = async (filters = {}) => {
 };
 
 export const getSalaryOptions = async () => {
-  const response = await fetch(`${API_URL}/api/salaries/options`, {
+  const response = await fetch(`${API_URL}/salaries/options`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -46,7 +46,7 @@ export const getSalaryOptions = async () => {
 };
 
 export const getSalaryStats = async (filters = {}) => {
-  const response = await fetch(`${API_URL}/api/salaries/stats${buildQueryString(filters)}`, {
+  const response = await fetch(`${API_URL}/salaries/stats${buildQueryString(filters)}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

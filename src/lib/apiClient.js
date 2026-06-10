@@ -1,6 +1,7 @@
 'use client';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+// Corrected API URL to point to port 5000 where the backend server is running.
+const API_URL = process.env.NEXT_PUBLIC_API_URL ;
 
 /**
  * A centralized API client for making HTTP requests.
@@ -35,6 +36,14 @@ const apiClient = async (endpoint, { method = 'GET', body, token } = {}) => {
 
   try {
     const response = await fetch(`${API_URL}${endpoint}`, config);
+
+    // Check if the response is not JSON before trying to parse it
+    const contentType = response.headers.get("content-type");
+    if (!contentType || !contentType.includes("application/json")) {
+        const textResponse = await response.text();
+        throw new Error(`Expected JSON response, but received ${contentType}. Response: ${textResponse}`);
+    }
+
     const data = await response.json();
 
     if (!response.ok) {

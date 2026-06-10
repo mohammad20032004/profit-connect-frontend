@@ -36,7 +36,8 @@ const SalaryHero = ({ filters, options, onChange, onSubmit, onClear, totalRecord
 
       <Card sx={{
         p: 4,
-        m:6,
+        mx:{ xs: 0, md: 4, lg: 15 },
+        my:4,
         borderRadius: 4,
         display: 'grid',
         gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)', xl: '2fr 2fr 1.5fr 1.5fr auto auto' },

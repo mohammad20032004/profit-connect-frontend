@@ -3,9 +3,9 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 
 const CompanyCard = ({ company, onFollow, isFollowLoading }) => (
   <Card sx={{width: 350, borderRadius: 3, border: '1px solid #ede6f4', '&:hover': { boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }, transition: '0.3s' }}>
-    <CardMedia component="img" height="80" image={company.coverPhoto || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab'} />
+    <CardMedia component="img" height="100" image={ '/Images/Company-cover.jpg'} />
     <CardContent sx={{ pt: 0, px: 2.5, pb: 3 }}>
-      <Avatar src={company.logo} sx={{ width: 60, height: 60, mt: -4, border: '4px solid white', bgcolor: '#ede6f4', mb: 2 }}>
+      <Avatar src={company.logo} sx={{ width: 60, height: 60, mt: -4, border: '4px solid white', bgcolor: '#3e007c', mb: 2 }}>
         {company.name?.charAt(0)}
       </Avatar>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 1, mb: 0.5 }}>

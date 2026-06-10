@@ -17,7 +17,7 @@ export const getUserById = async ({ token, userId }) => {
   if (!token) throw new Error('Missing auth token');
   if (!userId) throw new Error('Missing userId');
 
-  const response = await fetch(`${API_URL}/api/user/${userId}`, {
+  const response = await fetch(`${API_URL}/user/${userId}`, {
     method: 'GET',
     headers: getHeaders(token),
   });

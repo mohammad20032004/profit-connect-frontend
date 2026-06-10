@@ -64,7 +64,7 @@ export default function UserProfilePage() {
         setLoading(true);
         setError('');
         const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-        const res = await fetch(`${baseUrl}/api/user/${id}`, {
+        const res = await fetch(`${baseUrl}/user/${id}`, {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,

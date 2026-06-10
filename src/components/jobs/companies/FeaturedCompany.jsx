@@ -11,12 +11,12 @@ const FeaturedCompany = ({ company, onFollow, isFollowLoading }) => {
       <CardMedia
         component="img"
         sx={{ width: 280, display: { xs: 'none', md: 'block' } }}
-        image={company.coverPhoto || 'https://images.unsplash.com/photo-1497215728101-856f4ea42174'}
+        image={'https://images.unsplash.com/photo-1497215728101-856f4ea42174'}
       />
       <Box sx={{ p: 4, flex: 1 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Box sx={{ display: 'flex', gap: 2 }}>
-            <Avatar src={company.logo} variant="rounded" sx={{ width: 56, height: 56, bgcolor: '#f7f5f8', border: '1px solid #ede6f4' }}>
+            <Avatar src={company.logo} variant="rounded" sx={{ width: 56, height: 56, bgcolor: '#df0000', border: '1px solid #ede6f4' }}>
               {company.name?.charAt(0)}
             </Avatar>
             <Box>

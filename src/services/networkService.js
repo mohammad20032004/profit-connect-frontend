@@ -16,7 +16,7 @@ const parseResponse = async (response, fallbackMessage) => {
 };
 
 export const sendConnectionRequest = async ({ token, userId }) => {
-  const response = await fetch(`${API_URL}/api/network/connect/${userId}`, {
+  const response = await fetch(`${API_URL}/network/connect/${userId}`, {
     method: 'POST',
     headers: getHeaders(token),
   });
@@ -25,7 +25,7 @@ export const sendConnectionRequest = async ({ token, userId }) => {
 };
 
 export const acceptConnectionRequest = async ({ token, requestId }) => {
-  const response = await fetch(`${API_URL}/api/network/accept/${requestId}`, {
+  const response = await fetch(`${API_URL}/network/accept/${requestId}`, {
     method: 'PUT',
     headers: getHeaders(token),
   });
@@ -34,7 +34,7 @@ export const acceptConnectionRequest = async ({ token, requestId }) => {
 };
 
 export const rejectConnectionRequest = async ({ token, requestId }) => {
-  const response = await fetch(`${API_URL}/api/network/reject/${requestId}`, {
+  const response = await fetch(`${API_URL}/network/reject/${requestId}`, {
     method: 'PUT',
     headers: getHeaders(token),
   });
@@ -43,7 +43,7 @@ export const rejectConnectionRequest = async ({ token, requestId }) => {
 };
 
 export const getNetworkRequests = async (token) => {
-  const response = await fetch(`${API_URL}/api/network/requests`, {
+  const response = await fetch(`${API_URL}/network/requests`, {
     method: 'GET',
     headers: getHeaders(token),
   });
@@ -52,7 +52,7 @@ export const getNetworkRequests = async (token) => {
 };
 
 export const getConnections = async (token) => {
-  const response = await fetch(`${API_URL}/api/network/connections`, {
+  const response = await fetch(`${API_URL}/network/connections`, {
     method: 'GET',
     headers: getHeaders(token),
   });
@@ -61,7 +61,7 @@ export const getConnections = async (token) => {
 };
 
 export const removeConnection = async ({ token, userId }) => {
-  const response = await fetch(`${API_URL}/api/network/remove/${userId}`, {
+  const response = await fetch(`${API_URL}/network/remove/${userId}`, {
     method: 'DELETE',
     headers: getHeaders(token),
   });

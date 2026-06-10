@@ -4,7 +4,7 @@ export const uploadAvatar = async (token, file) => {
   const formData = new FormData();
   formData.append('avatar', file);
 
-  const response = await fetch(`${API_URL}/api/user/profile/avatar`, {
+  const response = await fetch(`${API_URL}/user/profile/avatar`, {
     method: 'PUT',
     headers: {
       Authorization: `Bearer ${token}`,

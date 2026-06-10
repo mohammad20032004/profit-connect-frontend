@@ -111,7 +111,6 @@ export default function Companies() {
 
   const visibleCompanies = useMemo(() => {
     const normalizedSearch = searchTerm.trim().toLowerCase();
-
     return companies.filter((company) => {
       const matchesSearch = !normalizedSearch || [
         company.name,
@@ -146,7 +145,7 @@ export default function Companies() {
   const remainingCompanyCards = companyCards.slice(3);
 
   return (
-    <Box sx={{ bgcolor: '#f7f5f8', minHeight: '100vh', pb: 8,width: '100%' }}>
+    <Box sx={{  minHeight: '100vh', pb: 8,width: '100%' }}>
       <Container maxWidth="xl">
         <CompanySearch value={searchTerm} onChange={setSearchTerm} />
 

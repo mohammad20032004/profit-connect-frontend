@@ -11,12 +11,13 @@ import {
   MenuItem,
   Stack,
   Typography,
+  Button
 } from '@mui/material';
 import {
   ThumbUpAlt, ThumbUpOffAlt, CommentOutlined, ShareOutlined, MoreVert
 } from '@mui/icons-material';
 import { CommentsModal } from './';
-
+import { useRouter } from 'next/navigation'; // 2. استيراد الخطاف (Hook)
 
 const PostActions = ({ onLike, onComment, isLiked }) => (
   <Stack direction="row" justifyContent="space-around" sx={{ mt: 1 }}>
@@ -52,7 +53,7 @@ export default function Post(props) {
   const handleMenuClose = () => setAnchorEl(null);
   const handleCommentsModalOpen = () => setCommentsModalOpen(true);
   const handleCommentsModalClose = () => setCommentsModalOpen(false);
-
+const router = useRouter(); // 3. تعريف الـ router هنا ليعمل في الأسفل
   return (
     <Card sx={{ mb: 2 }}>
       <CardContent sx={{ p: 2 }}>

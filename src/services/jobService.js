@@ -39,7 +39,7 @@ const parseResponse = async (response, fallbackMessage) => {
 
 export const getJobs = async (filters = {}) => {
   const queryString = buildQueryString(filters);
-  const response = await fetch(`${API_URL}/api/jobs${queryString}`, {
+  const response = await fetch(`${API_URL}/jobs${queryString}`, {
     method: 'GET',
     headers: getHeaders(),
   });
@@ -48,7 +48,7 @@ export const getJobs = async (filters = {}) => {
 };
 
 export const createJob = async ({ token, jobData }) => {
-  const response = await fetch(`${API_URL}/api/jobs`, {
+  const response = await fetch(`${API_URL}/jobs`, {
     method: 'POST',
     headers: getHeaders(token),
     body: JSON.stringify(jobData),
@@ -58,7 +58,7 @@ export const createJob = async ({ token, jobData }) => {
 };
 
 export const applyToJob = async ({ token, jobId, applicationData }) => {
-  const response = await fetch(`${API_URL}/api/jobs/${jobId}/apply`, {
+  const response = await fetch(`${API_URL}/jobs/${jobId}/apply`, {
     method: 'POST',
     headers: getHeaders(token),
     body: JSON.stringify(applicationData),
@@ -68,7 +68,7 @@ export const applyToJob = async ({ token, jobId, applicationData }) => {
 };
 
 export const getJobApplicants = async ({ token, jobId }) => {
-  const response = await fetch(`${API_URL}/api/jobs/${jobId}/applicants`, {
+  const response = await fetch(`${API_URL}/jobs/${jobId}/applicants`, {
     method: 'GET',
     headers: getHeaders(token),
   });
@@ -77,7 +77,7 @@ export const getJobApplicants = async ({ token, jobId }) => {
 };
 
 export const updateApplicationStatus = async ({ token, applicationId, status }) => {
-  const response = await fetch(`${API_URL}/api/jobs/applications/${applicationId}/status`, {
+  const response = await fetch(`${API_URL}/jobs/applications/${applicationId}/status`, {
     method: 'PUT',
     headers: getHeaders(token),
     body: JSON.stringify({ status }),
@@ -87,7 +87,7 @@ export const updateApplicationStatus = async ({ token, applicationId, status }) 
 };
 
 export const getMyApplications = async (token) => {
-  const response = await fetch(`${API_URL}/api/jobs/my-applications`, {
+  const response = await fetch(`${API_URL}/jobs/my-applications`, {
     method: 'GET',
     headers: getHeaders(token),
   });
