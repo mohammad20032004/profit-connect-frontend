@@ -17,13 +17,14 @@ import { useSelector } from 'react-redux';
 
 import { getConversationMessages, sendMessage } from '@/services/messagesService';
 
-const normalizeMessage = (m) => {
+const normalizeMessage = (m, currentUser) => {
   const content = m?.content ?? m?.text ?? '';
+  const isSent = m?.sender?._id === currentUser?._id || m?.sender === currentUser?._id || m?.isSent;
   return {
-    id: m?.id ?? m?._id ?? m?.uuid ?? `${m?.createdAt || ''}-${Math.random()}`,
-    type: m?.type ?? m?.senderType ?? (m?.isSent ? 'sent' : 'received'),
+    id: m?._id ?? m?.id ?? m?.uuid ?? `${m?.createdAt || ''}-${Math.random()}`,
+    type: isSent ? 'sent' : 'received',
     text: content,
-    time: m?.time ?? m?.createdAt ?? '',
+    time: m?.createdAt ?? m?.time ?? '',
     raw: m,
   };
 };
@@ -77,40 +78,50 @@ const Bubble = ({ type, text, time, avatar }) => {
   );
 };
 
-export default function ChatWindow({ conversation }) {
-  const { token, user } = useSelector((state) => state.user);
+export default function ChatWindow({ conversation: rawConversation }) {
+  const { token, user: currentUser } = useSelector((state) => state.user);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const conversationId = conversation?.id ?? conversation?._id ?? conversation?.conversationId;
+  const conversation = rawConversation?.conversation || rawConversation;
+  const conversationId = conversation?._id || rawConversation?._id;
+  
+  const otherParticipant = useMemo(() => 
+    conversation?.participants?.find(p => p._id !== currentUser?._id)
+  , [conversation, currentUser]);
 
-  const loadMessages = async () => {
-    if (!token || !conversationId) return;
+  const chatName = otherParticipant?.profile?.fullname || otherParticipant?.username || conversation?.name || 'Chat';
+  const chatRole = otherParticipant?.role || 'User';
+  const chatAvatar = otherParticipant?.profile?.avatar;
+  const isOnline = otherParticipant?.onlineStatus === 'online';
+
+  const loadMessages = async (id) => {
+    if (!token || !id) return;
     try {
-      const res = await getConversationMessages({ token, conversationId, page: 1, limit: 30 });
+      const res = await getConversationMessages({ token, conversationId: id, page: 1, limit: 30 });
       const list = res?.data ?? [];
-      setMessages(list.map(normalizeMessage));
+      setMessages(list.map(m => normalizeMessage(m, currentUser)));
     } catch {
       setMessages([]);
     }
   };
 
   useEffect(() => {
+    if (!conversationId || !token) {
+      setMessages([]);
+      return;
+    }
+
     let isMounted = true;
 
     const load = async () => {
-      if (!token || !conversationId) {
-        setMessages([]);
-        return;
-      }
-
       setLoading(true);
       try {
         const res = await getConversationMessages({ token, conversationId, page: 1, limit: 30 });
-        const list = res?.data ?? [];
         if (!isMounted) return;
-        setMessages(list.map(normalizeMessage));
+        const list = res?.data ?? [];
+        setMessages(list.map(m => normalizeMessage(m, currentUser)));
       } catch {
         if (!isMounted) return;
         setMessages([]);
@@ -124,11 +135,10 @@ export default function ChatWindow({ conversation }) {
     return () => {
       isMounted = false;
     };
-  }, [token, conversationId]);
+  }, [token, conversationId, currentUser]);
 
   const handleSend = async () => {
-    if (!token || !conversationId) return;
-    if (!message.trim()) return;
+    if (!token || !conversationId || !message.trim()) return;
 
     const content = message;
     setMessage('');
@@ -136,24 +146,19 @@ export default function ChatWindow({ conversation }) {
     const tempMessage = normalizeMessage({
       uuid: `temp-${Date.now()}`,
       content,
-      sender: user?._id,
-      isSent: true,
+      sender: { _id: currentUser?._id },
       createdAt: new Date().toISOString(),
-    });
+    }, currentUser);
     
     setMessages(current => [...current, tempMessage]);
 
     try {
       await sendMessage({ token, conversationId, content });
-      // After sending, refresh the conversation to get the final message from the server.
-      await loadMessages(); 
+      await loadMessages(conversationId);
     } catch {
-      // If send fails, remove the temporary message and show an error.
       setMessages(current => current.filter(m => m.id !== tempMessage.id));
     }
   };
-
-  const viewMessages = useMemo(() => messages, [messages]);
 
   if (!conversation) {
     return (
@@ -190,15 +195,15 @@ export default function ChatWindow({ conversation }) {
         <Toolbar sx={{ justifyContent: 'space-between', minHeight: { xs: 64, md: 74 } }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.75 }}>
             <Avatar
-              src={conversation.avatar}
+              src={chatAvatar && chatAvatar !== 'default-avatar.png' ? chatAvatar : undefined}
               sx={{ width: 42, height: 42, boxShadow: '0 10px 20px rgba(15,23,42,0.08)' }}
             />
             <Box>
               <Typography sx={{ fontWeight: 800, fontSize: '0.98rem', color: '#0f172a' }}>
-                {conversation.name}
+                {chatName}
               </Typography>
               <Typography sx={{ color: '#64748b', fontSize: '0.77rem' }}>
-                {conversation.role} {conversation.online ? '• Online' : '• Offline'}
+                {chatRole} {isOnline ? '• Online' : '• Offline'}
               </Typography>
             </Box>
           </Box>
@@ -232,13 +237,13 @@ export default function ChatWindow({ conversation }) {
           </Typography>
         </Divider>
 
-        {viewMessages.map((item) => (
+        {messages.map((item) => (
           <Bubble
             key={item.id}
             type={item.type}
             text={item.text}
             time={item.time}
-            avatar={conversation.avatar}
+            avatar={chatAvatar}
           />
         ))}
       </Box>

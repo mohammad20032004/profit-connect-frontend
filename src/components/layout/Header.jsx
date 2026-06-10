@@ -166,9 +166,8 @@ const Header = () => {
             {navItems.map((item) => {
               const isActive = pathname === item.link;
               return (
-                <Link href={item.link} key={item.label} passHref>
+                <Link href={item.link} key={item.label} passHref style={{ textDecoration: 'none'}}>
                   <Box
-                    component="a"
                     sx={{
                       display: 'flex',
                       flexDirection: 'column',

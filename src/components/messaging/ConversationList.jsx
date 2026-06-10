@@ -14,48 +14,51 @@ import {
   Typography,
 } from '@mui/material';
 import { Edit, Search } from '@mui/icons-material';
-
-const normalizeConversation = (conv) => {
-  const name = conv?.name ?? conv?.conversation?.name ?? '';
-  const role = conv?.role ?? conv?.conversation?.role ?? '';
-  const avatar = conv?.avatar ?? conv?.conversation?.avatar ?? undefined;
-  const message = conv?.message ?? conv?.lastMessage?.content ?? '';
-  const time = conv?.time ?? conv?.lastMessage?.time ?? '';
-  const online = conv?.online ?? conv?.conversation?.online ?? false;
-  const unread = conv?.unread ?? conv?.unreadCount ?? 0;
-
-  return {
-    id: conv?.id ?? conv?._id ?? conv?.conversationId ?? conv?.conversation?._id ?? conv?.conversation?.id,
-    name,
-    role,
-    avatar,
-    message,
-    time,
-    online,
-    unread,
-    raw: conv,
-  };
-};
-
-
-// Keep demo export for fallback during development.
-// UI will render real data passed via props.
-export const demoConversations = [];
-
+import { useSelector } from 'react-redux';
 
 const ConversationList = ({
-  conversations = demoConversations,
+  conversations = [],
   selectedId,
   searchQuery,
   onSearchChange,
   onSelectConversation,
 }) => {
-  const normalized = (conversations || []).map(normalizeConversation);
+  const { user: currentUser } = useSelector((state) => state.user);
+
+  const normalizeConversation = (rawConv) => {
+    if (!rawConv) return null;
+
+    const conv = rawConv.conversation || rawConv;
+    const otherParticipant = conv.participants?.find((p) => p._id !== currentUser?._id);
+
+    const name = otherParticipant?.profile?.fullname || otherParticipant?.username || conv.name || 'Conversation';
+    const role = otherParticipant?.role || 'User';
+    const avatar = otherParticipant?.profile?.avatar || conv.avatar;
+    const online = otherParticipant?.onlineStatus === 'online' || conv.online || false;
+
+    const message = rawConv.lastMessage?.content || conv.lastMessage?.content || rawConv.message || '';
+    const time = rawConv.lastMessage?.createdAt || conv.lastMessage?.createdAt || rawConv.time || '';
+    const unread = rawConv.unreadCount ?? rawConv.unread ?? 0;
+    const id = conv._id || rawConv._id || conv.id || rawConv.id;
+
+    return {
+      id,
+      name,
+      role,
+      avatar,
+      message,
+      time,
+      online,
+      unread,
+      raw: rawConv,
+    };
+  };
+
+  const normalized = (conversations || []).map(normalizeConversation).filter(Boolean);
 
   const filteredConversations = normalized.filter((conv) =>
     (conv.name || '').toLowerCase().includes((searchQuery || '').toLowerCase())
   );
-
 
   return (
     <Box
@@ -114,7 +117,7 @@ const ConversationList = ({
           return (
             <ListItemButton
               key={conv.id}
-              onClick={() => onSelectConversation(conv)}
+              onClick={() => onSelectConversation(conv.raw)}
               sx={{
                 mb: 1,
                 alignItems: 'flex-start',
@@ -136,7 +139,7 @@ const ConversationList = ({
                   invisible={!conv.online}
                   anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                 >
-                  <Avatar src={conv.avatar} sx={{ width: 48, height: 48 }} />
+                  <Avatar src={conv.avatar && conv.avatar !== 'default-avatar.png' ? conv.avatar : undefined} sx={{ width: 48, height: 48 }} />
                 </Badge>
               </ListItemAvatar>
               <ListItemText
