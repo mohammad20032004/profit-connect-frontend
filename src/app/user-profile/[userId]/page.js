@@ -1,15 +1,45 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { Avatar, Box, Card, CardContent, Typography, CircularProgress } from '@mui/material';
+import React, { useEffect, useState, useMemo } from 'react';
+import {
+  Avatar,
+  Box,
+  Card,
+  CardContent,
+  Typography,
+  CircularProgress,
+  Container,
+  Divider,
+  Chip,
+  Stack,
+  Button,
+  Link,
+  Grid,
+  IconButton,
+} from '@mui/material';
+import {
+  LinkedIn as LinkedInIcon,
+  GitHub as GitHubIcon,
+  Language as LanguageIcon,
+  Email as EmailIcon,
+} from '@mui/icons-material';
 import { useSelector } from 'react-redux';
-import { useParams } from 'next/navigation'; // لجلب الـ ID في الـ Client Component
+import { useParams, useRouter } from 'next/navigation';
+import { createConversation } from '@/services/messagesService';
+
+const StatItem = ({ value, label }) => (
+  <Box textAlign="center">
+    <Typography variant="h5" sx={{ fontWeight: 700 }}>{value}</Typography>
+    <Typography variant="caption" color="text.secondary" sx={{ textTransform: 'uppercase' }}>
+      {label}
+    </Typography>
+  </Box>
+);
 
 export default function UserProfilePage() {
   const params = useParams();
-  const id = params?.userId; // استخراج الـ ID من الرابط
-  
-  // جلب التوكن من الـ Redux Store الخاص بتطبيقك
+  const router = useRouter();
+  const id = params?.userId;
   const token = useSelector((state) => state.user.token);
 
   const [userData, setUserData] = useState(null);
@@ -18,27 +48,22 @@ export default function UserProfilePage() {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      if (!id) return;
-      
+      if (!id) {
+        setLoading(false);
+        setError('User ID not found.');
+        return;
+      }
       try {
         setLoading(true);
         setError('');
-        
-        const baseUrl = 'http://localhost:5000'; // تأكد من مطابقة بورت الباك-إند
-        
+        const baseUrl = 'http://localhost:5000';
         const res = await fetch(`${baseUrl}/api/user/${id}`, {
-          method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            // تمرير التوكن في الهيدر كما يفعل تطبيقك في جلب المنشورات
-            ...(token && { 'Authorization': `Bearer ${token}` }) 
-          }
+            ...(token && { Authorization: `Bearer ${token}` }),
+          },
         });
-
-        if (!res.ok) {
-          throw new Error(`خطأ من السيرفر: كود الاستجابة ${res.status}`);
-        }
-
+        if (!res.ok) throw new Error(`Server responded with ${res.status}`);
         const result = await res.json();
         setUserData(result?.data || null);
       } catch (err) {
@@ -52,9 +77,30 @@ export default function UserProfilePage() {
     fetchProfile();
   }, [id, token]);
 
+  const handleMessageClick = async () => {
+    if (!token || !id) return;
+    try {
+      const result = await createConversation({ token, recipientId: id });
+      const conversationId = result?.data?._id;
+      if (conversationId) {
+        router.push(`/messaging?conversationId=${conversationId}`);
+      } else {
+        router.push('/messaging');
+      }
+    } catch (err) {
+      console.error("Failed to create conversation:", err);
+      // Optionally, show an error to the user
+    }
+  };
+
+  const { profile, username, role, professional, email } = userData || {};
+
+  const fullName = useMemo(() => profile?.fullname || `${profile?.firstName} ${profile?.lastName}`.trim() || username, [profile, username]);
+  const headline = useMemo(() => profile?.headline || role || 'Member', [profile, role]);
+
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 8 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh' }}>
         <CircularProgress sx={{ color: '#240046' }} />
       </Box>
     );
@@ -62,49 +108,123 @@ export default function UserProfilePage() {
 
   if (error || !userData) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 8, p: 2 }}>
-        <Typography color="error" variant="h6" align="center">
-          {error ? `فشل جلب البيانات: ${error}` : 'المستخدم غير موجود.'}
+      <Container maxWidth="sm" sx={{ mt: 8, p: 2, textAlign: 'center' }}>
+        <Typography color="error" variant="h6">
+          {error ? `Failed to load profile: ${error}` : 'This user does not exist.'}
         </Typography>
-      </Box>
+      </Container>
     );
   }
 
-  const { profile, username, role } = userData;
-  const fullName = profile?.fullname || `${profile?.firstName || ''} ${profile?.lastName || ''}`.trim() || username;
-
   return (
-    <Box sx={{ maxWidth: 600, mx: 'auto', mt: 5, p: 2 }}>
-      <Card 
-        sx={{ 
-          borderRadius: 4, 
-          boxShadow: '0 10px 30px rgba(0,0,0,0.05)',
-          background: 'rgba(255,255,255,0.8)',
-          backdropFilter: 'blur(10px)',
-          border: '1px solid rgba(255,255,255,0.5)'
+    <Container maxWidth="lg" sx={{ mt: { xs: 2, sm: 4 }, mb: 4 }}>
+      <Card
+        data-aos="fade-up"
+        sx={{
+          borderRadius: 5,
+          boxShadow: '0 18px 36px rgba(15,23,42,0.08)',
+          background: 'rgba(255,255,255,0.7)',
+          backdropFilter: 'blur(12px)',
+          border: '1px solid rgba(255,255,255,0.55)',
         }}
       >
-        <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', py: 4 }}>
-          <Avatar 
-            src={profile?.avatar && profile.avatar !== 'default-avatar.png' ? profile.avatar : undefined} 
-            sx={{ width: 100, height: 100, mb: 2, fontSize: '2.5rem' }}
-          >
-            {fullName?.charAt(0).toUpperCase()}
-          </Avatar>
-
-          <Typography variant="h5" sx={{ fontWeight: 800, color: '#1e1b4b', mb: 1 }}>
-            {fullName}
-          </Typography>
-
-          <Typography variant="body1" color="text.secondary" align="center" sx={{ px: 3, mb: 2, fontWeight: 500 }}>
-            {profile?.headline || role || 'Professional Member'}
-          </Typography>
-
-          <Typography variant="caption" sx={{ color: 'text.disabled' }}>
-            ID: {id}
-          </Typography>
+        {/* --- Header Section --- */}
+        <CardContent sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 2, sm: 4 }} alignItems="center">
+            <Avatar
+              src={profile?.avatar && profile.avatar !== 'default-avatar.png' ? profile.avatar : undefined}
+              sx={{ width: { xs: 100, sm: 140 }, height: { xs: 100, sm: 140 }, fontSize: '3rem', border: '4px solid #fff' }}
+            >
+              {fullName?.charAt(0).toUpperCase()}
+            </Avatar>
+            <Box sx={{ textAlign: { xs: 'center', sm: 'left' } }}>
+              <Typography variant="h4" sx={{ fontWeight: 800, color: '#1e1b4b' }}>
+                {fullName}
+              </Typography>
+              <Typography variant="h6" color="text.secondary" sx={{ fontWeight: 500, mb: 2 }}>
+                {headline}
+              </Typography>
+              <Stack direction="row" spacing={1} justifyContent={{ xs: 'center', sm: 'flex-start' }}>
+                <Button variant="contained" size="large" sx={{ borderRadius: 99, px: 4 }}>Follow</Button>
+                <Button variant="outlined" size="large" sx={{ borderRadius: 99, px: 4 }} onClick={handleMessageClick}>Message</Button>
+              </Stack>
+            </Box>
+          </Stack>
         </CardContent>
+
+        <Divider sx={{ mx: 4 }} />
+
+        {/* --- Stats Section --- */}
+        <CardContent sx={{ py: 3 }}>
+          <Grid container spacing={2} justifyContent="space-evenly">
+            <Grid item><StatItem value={profile?.rScore || 0} label="R-Score" /></Grid>
+            <Grid item><StatItem value={profile?.followersCount || 0} label="Followers" /></Grid>
+            <Grid item><StatItem value={profile?.followingCount || 0} label="Following" /></Grid>
+            <Grid item><StatItem value={profile?.postsCount || 0} label="Posts" /></Grid>
+          </Grid>
+        </CardContent>
+        
+        <Divider sx={{ mx: 4, display: (professional?.skills?.length > 0 || profile?.bio) ? 'block' : 'none' }} />
+
+        {/* --- Bio and Skills --- */}
+        <CardContent sx={{ p: { xs: 2, md: 4 } }}>
+          <Grid container spacing={4}>
+            {profile?.bio && (
+                <Grid item xs={12} md={6}>
+                    <Typography variant="h6" sx={{ fontWeight: 700, mb: 1.5, color: '#334155' }}>About Me</Typography>
+                    <Typography variant="body1" color="text.secondary" sx={{ lineHeight: 1.7 }}>
+                        {profile.bio}
+                    </Typography>
+                </Grid>
+            )}
+            
+            {professional?.skills?.length > 0 && (
+              <Grid item xs={12} md={profile?.bio ? 6 : 12}>
+                <Typography variant="h6" sx={{ fontWeight: 700, mb: 1.5, color: '#334155' }}>Skills</Typography>
+                <Stack direction="row" flexWrap="wrap" gap={1.2}>
+                  {professional.skills.map((skill) => (
+                    <Chip key={skill} label={skill} variant="outlined" sx={{ fontWeight: 500 }} />
+                  ))}
+                </Stack>
+              </Grid>
+            )}
+          </Grid>
+        </CardContent>
+        
+        {/* --- Contact & Socials --- */}
+        <Box sx={{ bgcolor: 'rgba(0,0,0,0.03)', p: { xs: 2, md: 3 } }}>
+          <Stack 
+            direction={{ xs: 'column', sm: 'row' }} 
+            spacing={{ xs: 2, sm: 4 }} 
+            alignItems="center" 
+            justifyContent="space-between"
+          >
+            <Stack direction="row" spacing={2} alignItems="center" sx={{ color: 'text.secondary' }}>
+                <EmailIcon fontSize="small" />
+                <Link href={`mailto:${email}`} color="inherit" sx={{ fontWeight: 500 }}>{email}</Link>
+            </Stack>
+            
+            <Stack direction="row" spacing={1}>
+              {profile?.socialLinks?.linkedin && (
+                <IconButton component={Link} href={profile.socialLinks.linkedin} target="_blank">
+                  <LinkedInIcon />
+                </IconButton>
+              )}
+              {profile?.socialLinks?.github && (
+                <IconButton component={Link} href={profile.socialLinks.github} target="_blank">
+                  <GitHubIcon />
+                </IconButton>
+              )}
+              {profile?.socialLinks?.website && (
+                <IconButton component={Link} href={profile.socialLinks.website} target="_blank">
+                  <LanguageIcon />
+                </IconButton>
+              )}
+            </Stack>
+          </Stack>
+        </Box>
+
       </Card>
-    </Box>
+    </Container>
   );
 }

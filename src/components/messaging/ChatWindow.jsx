@@ -78,22 +78,33 @@ const Bubble = ({ type, text, time, avatar }) => {
 };
 
 export default function ChatWindow({ conversation }) {
-  const { token } = useSelector((state) => state.user);
+  const { token, user } = useSelector((state) => state.user);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const conversationId = conversation?.id ?? conversation?._id ?? conversation?.conversationId;
 
-  useEffect(() => {
-    if (!token || !conversationId) {
+  const loadMessages = async () => {
+    if (!token || !conversationId) return;
+    try {
+      const res = await getConversationMessages({ token, conversationId, page: 1, limit: 30 });
+      const list = res?.data ?? [];
+      setMessages(list.map(normalizeMessage));
+    } catch {
       setMessages([]);
-      return;
     }
+  };
 
+  useEffect(() => {
     let isMounted = true;
 
     const load = async () => {
+      if (!token || !conversationId) {
+        setMessages([]);
+        return;
+      }
+
       setLoading(true);
       try {
         const res = await getConversationMessages({ token, conversationId, page: 1, limit: 30 });
@@ -122,13 +133,23 @@ export default function ChatWindow({ conversation }) {
     const content = message;
     setMessage('');
 
+    const tempMessage = normalizeMessage({
+      uuid: `temp-${Date.now()}`,
+      content,
+      sender: user?._id,
+      isSent: true,
+      createdAt: new Date().toISOString(),
+    });
+    
+    setMessages(current => [...current, tempMessage]);
+
     try {
       await sendMessage({ token, conversationId, content });
-      const res = await getConversationMessages({ token, conversationId, page: 1, limit: 30 });
-      const list = res?.data ?? [];
-      setMessages(list.map(normalizeMessage));
+      // After sending, refresh the conversation to get the final message from the server.
+      await loadMessages(); 
     } catch {
-      // if send fails, do nothing (UI keeps current list)
+      // If send fails, remove the temporary message and show an error.
+      setMessages(current => current.filter(m => m.id !== tempMessage.id));
     }
   };
 
@@ -275,4 +296,3 @@ export default function ChatWindow({ conversation }) {
     </Box>
   );
 }
-
