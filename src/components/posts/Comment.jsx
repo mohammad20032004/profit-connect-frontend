@@ -1,44 +1,24 @@
 'use client';
 
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Box, Avatar, Typography, Paper } from '@mui/material';
-
 import { useRouter } from 'next/navigation';
-import { useSelector } from 'react-redux';
-import { useState, useCallback } from 'react';
-
-import { getUserById } from '@/services/userService';
 
 export default function Comment({ user, text_comment, userImage, timeAgo = 'الآن', userId }) {
   const router = useRouter();
-  const { token } = useSelector((state) => state.user);
-  const [loadingProfile, setLoadingProfile] = useState(false);
 
-  const handleClickUser = useCallback(async () => {
-    if (!userId) return;
-    if (!token) {
-      router.push(`/profile/${userId}`);
-      return;
+  const handleClickUser = useCallback(() => {
+    if (userId) {
+      router.push(`/user-profile/${userId}`);
     }
-
-    try {
-      setLoadingProfile(true);
-      const res = await getUserById({ token, userId });
-      // تمرير البيانات عبر query ليست الأفضل، لكن بدون بنية state/redirect الحالية سنحتاج طريقة.
-      // سيتم فتح صفحة profile مع الاعتماد على backend endpoint لاسترجاع كامل البيانات عند الحاجة.
-      router.push(`/profile/${res?.data?.id || userId}`);
-    } catch {
-      router.push(`/profile/${userId}`);
-    } finally {
-      setLoadingProfile(false);
-    }
-  }, [router, token, userId]);
+  }, [router, userId]);
 
   return (
     <Box sx={{ display: 'flex', gap: 1.5 }}>
       <Avatar
         src={userImage || `https://i.pravatar.cc/150?u=${user}`}
-        sx={{ width: 40, height: 40 }}
+        sx={{ width: 40, height: 40, cursor: userId ? 'pointer' : 'default' }}
+        onClick={handleClickUser}
       />
       <Box sx={{ flex: 1 }}>
         <Paper
@@ -62,7 +42,11 @@ export default function Comment({ user, text_comment, userImage, timeAgo = 'ال
               fontWeight: 'bold',
               mb: 0.5,
               cursor: userId ? 'pointer' : 'default',
-              opacity: loadingProfile ? 0.7 : 1,
+              display: 'inline-block',
+              '&:hover': userId ? {
+                color: '#0ea5e9',
+                textDecoration: 'underline',
+              } : {},
             }}
           >
             {user}
@@ -78,4 +62,3 @@ export default function Comment({ user, text_comment, userImage, timeAgo = 'ال
     </Box>
   );
 }
-
