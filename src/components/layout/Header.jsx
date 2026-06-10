@@ -1,5 +1,4 @@
 'use client';
-
 import React, { useMemo, useState } from 'react';
 import {
   AppBar,
@@ -16,16 +15,15 @@ import {
   Menu,
   MenuItem,
   ListItemIcon,
-  ListItemText
+  ListItemText,
 } from '@mui/material';
-import { styled } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
 import HomeIcon from '@mui/icons-material/Home';
 import PeopleIcon from '@mui/icons-material/People';
 import WorkIcon from '@mui/icons-material/Work';
 import MessageIcon from '@mui/icons-material/Message';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import AppsIcon from '@mui/icons-material/Apps'; // For the "Business" grid icon
+import AppsIcon from '@mui/icons-material/Apps';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
@@ -36,54 +34,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import JobHeader from '../jobs/JobHeader';
 import Logo from '../common/Logo';
 import { clearUserProfile } from '@/lib/features/userSlice';
-
-const Search = styled('div')(({ theme }) => ({
-  position: 'relative',
-  borderRadius: '4px',
-  backgroundColor: '#edf3f8', // لون خلفية رمادي فاتح جداً
-  '&:hover': {
-    backgroundColor: '#e1e9f1',
-  },
-  marginRight: theme.spacing(2),
-  marginLeft: 0,
-  width: '100%',
-  [theme.breakpoints.up('sm')]: {
-    marginLeft: theme.spacing(3),
-    width: '280px',
-  },
-  [theme.breakpoints.up('md')]: {
-    width: '340px', // العرض في الشاشات الأكبر
-  },
-  transition: 'width 0.3s',
-  display: 'flex',
-  alignItems: 'center',
-}));
-
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-  padding: theme.spacing(0, 1),
-  height: '100%',
-  position: 'absolute',
-  pointerEvents: 'none',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  color: '#666',
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
-  width: '100%',
-
-  '& .MuiInputBase-input': {
-    padding: theme.spacing(1, 1, 1, 0),
-    paddingLeft: `calc(1em + ${theme.spacing(3)})`, // مساحة للأيقونة
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    fontSize: '14px',
-    color: '#000',
-  },
-}));
-
 
 const navItems = [
   { label: 'Home', icon: <HomeIcon />, hasBadge: false, link: '/' },
@@ -101,7 +51,7 @@ const Header = () => {
   const profile = useSelector((state) => state.user.profile);
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
   const [anchorEl, setAnchorEl] = useState(null);
-  // أضفنا '/sign-out' للقائمة
+
   const hiddenRoutes = ['/log-in', '/sign-up', '/sign-out', '/messaging', '/landing'];
   const jobRoutes = ['/jobs', '/jobs/search', '/jobs/post'];
   const menuOpen = Boolean(anchorEl);
@@ -112,7 +62,7 @@ const Header = () => {
       [profile?.firstName, profile?.lastName].filter(Boolean).join(' ') ||
       user?.username ||
       'My Profile',
-    [profile, user]
+    [profile, user],
   );
 
   const subLabel = user?.email || user?.role || 'View profile';
@@ -143,14 +93,16 @@ const Header = () => {
 
   if (shouldHideHeader) return null;
   if (isJobRoute) return <JobHeader />;
+
   return (
     <AppBar
       position="sticky"
-      elevation={0} // إزالة الظل الافتراضي ليكون مسطحاً
+      elevation={0}
       sx={{
-        backgroundColor: '#fff',
-        borderBottom: '1px solid #e0e0e0',
-        color: '#000'
+        backgroundColor: 'background.paper',
+        borderBottom: '1px solid',
+        borderColor: 'divider',
+        color: 'text.primary',
       }}
     >
       <Container maxWidth="xl">
@@ -161,114 +113,142 @@ const Header = () => {
           data-aos-duration="420"
           data-aos-once="false"
         >
-
-          {/* ========== Left Side: Logo & Search ========== */}
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-
-<Logo />
-            {/* Search Bar */}
-            <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-              <Search>
-                <SearchIconWrapper>
-                  <SearchIcon />
-                </SearchIconWrapper>
-                <StyledInputBase
-                  placeholder="Search for jobs, skills, or people"
-                  inputProps={{ 'aria-label': 'search' }}
-                />
-              </Search>
+            <Logo />
+            <Box
+              sx={{
+                display: { xs: 'none', sm: 'block' },
+                position: 'relative',
+                borderRadius: 1,
+                backgroundColor: 'grey.100',
+                '&:hover': {
+                  backgroundColor: 'grey.200',
+                },
+                mr: 2,
+                ml: { xs: 0, sm: 3 },
+                width: { sm: 280, md: 340 },
+                transition: 'width 0.3s',
+              }}
+            >
+              <Box
+                sx={{
+                  p: (theme) => theme.spacing(0, 1),
+                  height: '100%',
+                  position: 'absolute',
+                  pointerEvents: 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'grey.600',
+                }}
+              >
+                <SearchIcon />
+              </Box>
+              <InputBase
+                placeholder="Search for jobs, skills, or people"
+                inputProps={{ 'aria-label': 'search' }}
+                sx={{
+                  color: 'inherit',
+                  width: '100%',
+                  '& .MuiInputBase-input': {
+                    p: (theme) => theme.spacing(1, 1, 1, 0),
+                    pl: (theme) => `calc(1em + ${theme.spacing(3)})`,
+                    transition: (theme) => theme.transitions.create('width'),
+                    width: '100%',
+                    fontSize: '14px',
+                  },
+                }}
+              />
             </Box>
           </Box>
 
-          {/* ========== Right Side: Navigation Icons ========== */}
           <Stack direction="row" spacing={{ xs: 2, md: 4 }} alignItems="center" sx={{ height: '52px' }}>
-
             {navItems.map((item) => {
               const isActive = pathname === item.link;
               return (
-                <Box
-                  key={item.label}
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    cursor: 'pointer',
-                    height: '100%',
-                    position: 'relative',
-                    color: isActive ? '#191919' : '#666666',
-                    '&:hover': { color: '#191919' },
-                    width: { md: '60px', xs: 'auto' }
-                  }}
-                >
-                  <Link href={item.link}>
+                <Link href={item.link} key={item.label} passHref>
+                  <Box
+                    component="a"
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: 'pointer',
+                      height: '100%',
+                      position: 'relative',
+                      color: isActive ? 'text.primary' : 'text.secondary',
+                      '&:hover': { color: 'text.primary' },
+                      width: { md: '60px', xs: 'auto' },
+                      textDecoration: 'none',
+                    }}
+                  >
                     <Badge color="error" variant="dot" invisible={!item.hasBadge}>
                       {React.cloneElement(item.icon, { sx: { fontSize: 26 } })}
                     </Badge>
                     <Typography variant="caption" sx={{ display: { xs: 'none', md: 'block' }, fontSize: '12px' }}>
                       {item.label}
                     </Typography>
-                  </Link>
-
-                  {isActive && (
-                    <Box sx={{
-                      position: 'absolute',
-                      bottom: 0,
-                      left: 0,
-                      width: '100%',
-                      height: '2px',
-                      bgcolor: '#191919'
-                    }} />
-                  )}
-                </Box>
+                    {isActive && (
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          bottom: 0,
+                          left: 0,
+                          width: '100%',
+                          height: '2px',
+                          bgcolor: 'text.primary',
+                        }}
+                      />
+                    )}
+                  </Box>
+                </Link>
               );
             })}
 
-            {/* Profile Dropdown */}
             <Box
               onClick={handleOpenMenu}
+              role="button"
+              tabIndex="0"
               sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              borderLeft: '1px solid #e0e0e0',
-              pl: 3,
-              height: '100%',
-              justifyContent: 'center',
-              cursor: 'pointer'
-            }}>
-              <Avatar
-                alt={fullName}
-                src={avatarSrc}
-                sx={{ width: 24, height: 24 }}
-              >
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                borderLeft: '1px solid',
+                borderColor: 'divider',
+                pl: 3,
+                height: '100%',
+                justifyContent: 'center',
+                cursor: 'pointer',
+              }}
+            >
+              <Avatar alt={fullName} src={avatarSrc} sx={{ width: 24, height: 24 }}>
                 {fullName?.charAt(0)?.toUpperCase()}
               </Avatar>
               <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
-                <Typography variant="caption" sx={{ color: '#666', fontSize: '12px' }}>
+                <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '12px' }}>
                   Me
                 </Typography>
-                <ArrowDropDownIcon sx={{ fontSize: 16, color: '#666' }} />
+                <ArrowDropDownIcon sx={{ fontSize: 16, color: 'text.secondary' }} />
               </Box>
             </Box>
 
-            {/* Business Link */}
-            <Box sx={{
-              display: { xs: 'none', md: 'flex' },
-              flexDirection: 'column',
-              alignItems: 'center',
-              cursor: 'pointer',
-              color: '#666',
-              '&:hover': { color: '#191919' }
-            }}>
+            <Box
+              sx={{
+                display: { xs: 'none', md: 'flex' },
+                flexDirection: 'column',
+                alignItems: 'center',
+                cursor: 'pointer',
+                color: 'text.secondary',
+                '&:hover': { color: 'text.primary' },
+              }}
+            >
               <AppsIcon sx={{ fontSize: 24 }} />
               <Typography variant="caption" sx={{ fontSize: '12px' }}>
                 For Business
               </Typography>
             </Box>
-
           </Stack>
-
         </Toolbar>
       </Container>
 
@@ -284,7 +264,8 @@ const Header = () => {
             mt: 1.5,
             minWidth: 280,
             borderRadius: 3,
-            border: '1px solid #e7e7e7',
+            border: '1px solid',
+            borderColor: 'divider',
             boxShadow: '0 18px 40px rgba(15, 23, 42, 0.12)',
             overflow: 'visible',
           },
@@ -296,10 +277,10 @@ const Header = () => {
               {fullName?.charAt(0)?.toUpperCase()}
             </Avatar>
             <Box sx={{ minWidth: 0 }}>
-              <Typography sx={{ fontWeight: 800, color: '#191919' }} noWrap>
+              <Typography sx={{ fontWeight: 800, color: 'text.primary' }} noWrap>
                 {fullName}
               </Typography>
-              <Typography variant="body2" sx={{ color: '#666' }} noWrap>
+              <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
                 {subLabel}
               </Typography>
             </Box>
@@ -335,8 +316,8 @@ const Header = () => {
 
         <Divider />
 
-        <MenuItem onClick={handleLogout} sx={{ py: 1.4, px: 2, color: '#b42318' }}>
-          <ListItemIcon sx={{ color: '#b42318' }}>
+        <MenuItem onClick={handleLogout} sx={{ py: 1.4, px: 2, color: 'error.main' }}>
+          <ListItemIcon sx={{ color: 'error.main' }}>
             <LogoutRoundedIcon fontSize="small" />
           </ListItemIcon>
           <ListItemText primary="Sign Out" secondary="Remove session from this device" />

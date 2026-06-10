@@ -7,7 +7,7 @@ import { useParams } from 'next/navigation'; // لجلب الـ ID في الـ C
 
 export default function UserProfilePage() {
   const params = useParams();
-  const id = params?.id; // استخراج الـ ID من الرابط
+  const id = params?.userId; // استخراج الـ ID من الرابط
   
   // جلب التوكن من الـ Redux Store الخاص بتطبيقك
   const token = useSelector((state) => state.user.token);

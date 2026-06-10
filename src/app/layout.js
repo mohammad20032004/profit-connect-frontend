@@ -15,7 +15,7 @@ export const metadata = {
 
 export default async function LocaleLayout({ children }) {
   return (
-    <html>
+    <html lang="en" dir="ltr">
       <body>
         <StoreProvider>
           <ThemeRegistry>

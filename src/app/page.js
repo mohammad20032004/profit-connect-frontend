@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import { useEffect } from 'react';
 import { Box } from '@mui/material';
 import { useSelector } from 'react-redux';
@@ -16,11 +16,7 @@ export default function Home() {
     }
   }, [authChecked, isAuthenticated, router]);
 
-  if (!authChecked) {
-    return null;
-  }
-
-  if (!isAuthenticated) {
+  if (!authChecked || !isAuthenticated) {
     return null;
   }
 
@@ -39,7 +35,7 @@ export default function Home() {
         p: { xs: 1.5, md: 2 },
         alignItems: 'start',
         position: 'relative',
-        backgroundColor: '#f4f6f8', // لون خلفية كلاسيكي ثابت بدلاً من التدرج
+        backgroundColor: (theme) => theme.palette.background.default,
       }}
     >
       <Box component="section" sx={{ minWidth: 0, order: { xs: 2, lg: 1 }, position: 'relative', zIndex: 1 }}>
@@ -54,23 +50,7 @@ export default function Home() {
           position: 'relative',
           borderRadius: { xs: 3, md: 4 },
           overflow: 'hidden',
-          position: 'relative',
           zIndex: 1,
-          '&::before': {
-            content: '""',
-            position: 'absolute',
-            inset: 0,
-            pointerEvents: 'none',
-          },
-          '&::after': {
-            content: '""',
-            position: 'absolute',
-            inset: 'auto -80px -120px auto',
-            width: 260,
-            height: 260,
-            borderRadius: '50%',
-            pointerEvents: 'none',
-          },
         }}
       >
         <MainSection />
