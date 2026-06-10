@@ -18,17 +18,14 @@ import SendIcon from '@mui/icons-material/Send';
 import Comment from './Comment';
 
 const CommentsModal = ({ open, onClose, comments = [], postAuthor, onAddComment }) => {
-  const profile = useSelector((state) => state.user.profile);
-  const user = useSelector((state) => state.user.user);
+  const { user, profile } = useSelector((state) => state.user);
   const [newComment, setNewComment] = useState('');
   const [loading, setLoading] = useState(false);
 
   const avatarSrc = profile?.avatar || undefined;
 
   const handleAddComment = async () => {
-    if (!newComment.trim()) {
-      return;
-    }
+    if (!newComment.trim()) return;
 
     try {
       setLoading(true);
@@ -54,48 +51,59 @@ const CommentsModal = ({ open, onClose, comments = [], postAuthor, onAddComment 
         display: 'flex',
         flexDirection: 'column'
       }}>
-        {/* Header */}
         <Box sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
             {postAuthor}&apos;s post
           </Typography>
-          <IconButton onClick={onClose} size="small">
-            <CloseIcon />
-          </IconButton>
+          <IconButton onClick={onClose} size="small"><CloseIcon /></IconButton>
         </Box>
 
         <Divider />
 
-        {/* Comments List */}
         <Box sx={{ flex: 1, overflowY: 'auto', p: 2 }}>
           {comments.length > 0 ? (
             <Stack spacing={2}>
-{comments.map((comment, index) => (
-                <Comment
-                  key={index}
-                  {...comment}
-                  userId={
-                    comment?.userId ||
-                    comment?.user_id ||
-                    comment?.userid ||
-                    comment?.user?._id ||
-                    comment?.user?.id ||
-                    comment?.id
-                  }
-                />
-              ))}
+              {comments.map((comment, index) => {
+                let userId = null;
+                const author = comment.user || comment.author;
 
+                if (author && typeof author === 'object') {
+                  userId = author._id || author.id;
+                }
+
+                if (!userId) {
+                  userId = comment.userId || comment.user_id;
+                }
+
+                const commentId = comment._id || comment.id;
+                if (userId === commentId) {
+                  userId = null; 
+                }
+
+                const username = author?.username || (typeof comment.user === 'string' ? comment.user : 'Unknown User');
+                const userImage = author?.profile?.avatar || comment.userImage;
+
+                return (
+                  <Comment
+                    key={commentId || index}
+                    user={username}
+                    userId={userId}
+                    userImage={userImage}
+                    text_comment={comment.text_comment}
+                    timeAgo={comment.timeAgo}
+                  />
+                );
+              })}
             </Stack>
           ) : (
             <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 4 }}>
-             No Comment Yet!
+              No Comments Yet!
             </Typography>
           )}
         </Box>
 
         <Divider />
 
-        {/* Add Comment */}
         <Box sx={{ p: 2, display: 'flex', gap: 1, alignItems: 'flex-start' }}>
           <Avatar sx={{ width: 32, height: 32 }} src={avatarSrc}>
             {user?.username?.charAt(0)?.toUpperCase()}
@@ -115,12 +123,7 @@ const CommentsModal = ({ open, onClose, comments = [], postAuthor, onAddComment 
             variant="contained"
             onClick={handleAddComment}
             disabled={!newComment.trim() || loading}
-            sx={{
-              minWidth: 'auto',
-              px: 2,
-              bgcolor: '#00B4D8',
-              '&:hover': { bgcolor: '#0096b8' }
-            }}
+            sx={{ minWidth: 'auto', px: 2, bgcolor: '#00B4D8', '&:hover': { bgcolor: '#0096b8' } }}
           >
             <SendIcon sx={{ fontSize: 20 }} />
           </Button>
