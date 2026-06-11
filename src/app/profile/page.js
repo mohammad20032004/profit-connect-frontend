@@ -1,5 +1,5 @@
-import ProfileOverview from "@/components/profile/ProfileOverview";
+import MyProfile from "@/components/profile/MyProfile";
 
 export default function ProfilePage() {
-  return <ProfileOverview />;
+  return <MyProfile />;
 }
