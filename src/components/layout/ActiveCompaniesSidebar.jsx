@@ -102,10 +102,10 @@ export default function ActiveCompaniesSidebar() {
         top: 88,
         overflow: 'hidden',
         borderRadius: 5,
-        border: '1px solid rgba(255,255,255,0.5)',
-        bgcolor: 'rgba(255,255,255,0.72)',
+        border: 'none',
+        bgcolor: 'transparent',
         backdropFilter: 'blur(20px)',
-        boxShadow: '0 20px 40px rgba(15,23,42,0.08)',
+        boxShadow: 'none',
         '&::before': {
           content: '""',
           position: 'absolute',
