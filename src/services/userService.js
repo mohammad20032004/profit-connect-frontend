@@ -25,3 +25,26 @@ export const getUserById = async ({ token, userId }) => {
   return parseResponse(response, 'تعذر جلب بيانات المستخدم');
 };
 
+/**
+ * Follow a user.
+ * POST /api/users/:userId/follow
+ */
+export const followUser = async ({ token, userId }) => {
+  const response = await fetch(`${API_URL}/api/users/${userId}/follow`, {
+    method: 'POST',
+    headers: getHeaders(token),
+  });
+  return parseResponse(response, 'Failed to follow user');
+};
+
+/**
+ * Unfollow a user.
+ * DELETE /api/users/:userId/follow
+ */
+export const unfollowUser = async ({ token, userId }) => {
+  const response = await fetch(`${API_URL}/api/users/${userId}/follow`, {
+    method: 'DELETE',
+    headers: getHeaders(token),
+  });
+  return parseResponse(response, 'Failed to unfollow user');
+};

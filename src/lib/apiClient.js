@@ -1,26 +1,11 @@
+
 'use client';
-
-// Corrected API URL to point to port 5000 where the backend server is running.
-const API_URL = process.env.NEXT_PUBLIC_API_URL ;
-
-/**
- * A centralized API client for making HTTP requests.
- * It handles URL construction, headers, body serialization, and error handling.
- *
- * @param {string} endpoint The API endpoint to call (e.g., '/auth/login').
- * @param {object} [options={}] Configuration options for the request.
- * @param {string} [options.method='GET'] The HTTP method.
- * @param {object} [options.body] The request body for POST/PUT/PATCH requests.
- * @param {string} [options.token] The JWT token for authentication.
- * @returns {Promise<any>} The JSON response from the API.
- * @throws {Error} Throws an error with a message from the API if the request fails.
- */
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 const apiClient = async (endpoint, { method = 'GET', body, token } = {}) => {
   const headers = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
   };
-
   if (token) {
     headers['Authorization'] = `Bearer ${token}`;
   }
